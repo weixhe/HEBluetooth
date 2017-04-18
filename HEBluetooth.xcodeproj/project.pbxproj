@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		048BDDAC1EA64BFF0098CB9D /* HECentralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 048BDDAB1EA64BFE0098CB9D /* HECentralManager.m */; };
 		048BDDAF1EA64E330098CB9D /* HEBluetooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 048BDDAE1EA64E330098CB9D /* HEBluetooth.m */; };
+		048BDDB21EA6510F0098CB9D /* HEBluetoothUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 048BDDB11EA6510F0098CB9D /* HEBluetoothUtility.m */; };
 		4557F7821EA5BB4E006005B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7811EA5BB4E006005B3 /* main.m */; };
 		4557F7851EA5BB4E006005B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7841EA5BB4E006005B3 /* AppDelegate.m */; };
 		4557F7881EA5BB4E006005B3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7871EA5BB4E006005B3 /* ViewController.m */; };
@@ -42,6 +43,8 @@
 		048BDDAB1EA64BFE0098CB9D /* HECentralManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HECentralManager.m; sourceTree = "<group>"; };
 		048BDDAD1EA64E330098CB9D /* HEBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEBluetooth.h; sourceTree = "<group>"; };
 		048BDDAE1EA64E330098CB9D /* HEBluetooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEBluetooth.m; sourceTree = "<group>"; };
+		048BDDB01EA6510F0098CB9D /* HEBluetoothUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEBluetoothUtility.h; sourceTree = "<group>"; };
+		048BDDB11EA6510F0098CB9D /* HEBluetoothUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEBluetoothUtility.m; sourceTree = "<group>"; };
 		4557F77D1EA5BB4E006005B3 /* HEBluetooth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HEBluetooth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4557F7811EA5BB4E006005B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4557F7831EA5BB4E006005B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -93,6 +96,8 @@
 				048BDDAB1EA64BFE0098CB9D /* HECentralManager.m */,
 				048BDDAD1EA64E330098CB9D /* HEBluetooth.h */,
 				048BDDAE1EA64E330098CB9D /* HEBluetooth.m */,
+				048BDDB01EA6510F0098CB9D /* HEBluetoothUtility.h */,
+				048BDDB11EA6510F0098CB9D /* HEBluetoothUtility.m */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -296,6 +301,7 @@
 			files = (
 				048BDDAF1EA64E330098CB9D /* HEBluetooth.m in Sources */,
 				4557F7881EA5BB4E006005B3 /* ViewController.m in Sources */,
+				048BDDB21EA6510F0098CB9D /* HEBluetoothUtility.m in Sources */,
 				4557F7851EA5BB4E006005B3 /* AppDelegate.m in Sources */,
 				048BDDAC1EA64BFF0098CB9D /* HECentralManager.m in Sources */,
 				4557F7821EA5BB4E006005B3 /* main.m in Sources */,
