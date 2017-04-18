@@ -15,6 +15,7 @@
 		4557F7901EA5BB4E006005B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4557F78E1EA5BB4E006005B3 /* LaunchScreen.storyboard */; };
 		4557F79B1EA5BB4E006005B3 /* HEBluetoothTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F79A1EA5BB4E006005B3 /* HEBluetoothTests.m */; };
 		4557F7A61EA5BB4E006005B3 /* HEBluetoothUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7A51EA5BB4E006005B3 /* HEBluetoothUITests.m */; };
+		4557F7B81EA5F644006005B3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4557F7B71EA5F644006005B3 /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		4557F7A11EA5BB4E006005B3 /* HEBluetoothUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HEBluetoothUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4557F7A51EA5BB4E006005B3 /* HEBluetoothUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HEBluetoothUITests.m; sourceTree = "<group>"; };
 		4557F7A71EA5BB4E006005B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4557F7B71EA5F644006005B3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4557F7B81EA5F644006005B3 /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +88,7 @@
 				4557F7991EA5BB4E006005B3 /* HEBluetoothTests */,
 				4557F7A41EA5BB4E006005B3 /* HEBluetoothUITests */,
 				4557F77E1EA5BB4E006005B3 /* Products */,
+				4557F7B61EA5F644006005B3 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,6 +142,14 @@
 				4557F7A71EA5BB4E006005B3 /* Info.plist */,
 			);
 			path = HEBluetoothUITests;
+			sourceTree = "<group>";
+		};
+		4557F7B61EA5F644006005B3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4557F7B71EA5F644006005B3 /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -507,6 +519,7 @@
 				4557F7AC1EA5BB4E006005B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4557F7AD1EA5BB4E006005B3 /* Build configuration list for PBXNativeTarget "HEBluetoothTests" */ = {
 			isa = XCConfigurationList;
@@ -515,6 +528,7 @@
 				4557F7AF1EA5BB4E006005B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4557F7B01EA5BB4E006005B3 /* Build configuration list for PBXNativeTarget "HEBluetoothUITests" */ = {
 			isa = XCConfigurationList;
@@ -523,6 +537,7 @@
 				4557F7B21EA5BB4E006005B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
