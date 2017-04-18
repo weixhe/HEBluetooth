@@ -35,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		048BDDA91EA649F60098CB9D /* HEBluetoothDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HEBluetoothDefine.h; sourceTree = "<group>"; };
 		4557F77D1EA5BB4E006005B3 /* HEBluetooth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HEBluetooth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4557F7811EA5BB4E006005B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4557F7831EA5BB4E006005B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -78,6 +79,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		048BDDA81EA649CC0098CB9D /* Bluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				048BDDA91EA649F60098CB9D /* HEBluetoothDefine.h */,
+			);
+			path = Bluetooth;
+			sourceTree = "<group>";
+		};
 		4557F7741EA5BB4E006005B3 = {
 			isa = PBXGroup;
 			children = (
@@ -106,6 +115,7 @@
 				4557F7861EA5BB4E006005B3 /* ViewController.h */,
 				4557F7871EA5BB4E006005B3 /* ViewController.m */,
 				4557F7891EA5BB4E006005B3 /* Main.storyboard */,
+				048BDDA81EA649CC0098CB9D /* Bluetooth */,
 				4557F78C1EA5BB4E006005B3 /* Assets.xcassets */,
 				4557F78E1EA5BB4E006005B3 /* LaunchScreen.storyboard */,
 				4557F7911EA5BB4E006005B3 /* Info.plist */,
@@ -507,6 +517,7 @@
 				4557F7AC1EA5BB4E006005B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4557F7AD1EA5BB4E006005B3 /* Build configuration list for PBXNativeTarget "HEBluetoothTests" */ = {
 			isa = XCConfigurationList;
@@ -515,6 +526,7 @@
 				4557F7AF1EA5BB4E006005B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4557F7B01EA5BB4E006005B3 /* Build configuration list for PBXNativeTarget "HEBluetoothUITests" */ = {
 			isa = XCConfigurationList;
@@ -523,6 +535,7 @@
 				4557F7B21EA5BB4E006005B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
