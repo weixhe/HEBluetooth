@@ -33,6 +33,10 @@
                          discoverWithCharacteristics:(NSArray *)discoverWithCharacteristics;
 
 
+#pragma mark - 属性
+@property (nonatomic, strong, readonly) HECentralManager *centralManager;
+
+
 #pragma mark - Block - CBCentralManagerDelegate
 
 /*!

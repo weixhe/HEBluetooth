@@ -34,7 +34,7 @@
 {
     self = [super init];
     if (self) {
-       
+       _bridge = [[HEBluetoothBridge alloc] init];
         connectedPeripherals = [NSMutableArray array];
         discoverPeripherals = [NSMutableArray array];
         autoReconnectPeripherals = [NSMutableArray array];
@@ -284,6 +284,7 @@
 
 // 定时器超时，停止扫描
 - (void)disconnect:(id)sender {
+    DLog(@">>>链接设备超时, 已取消");
     [self cancelScan];
 }
 

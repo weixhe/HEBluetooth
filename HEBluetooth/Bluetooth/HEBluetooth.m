@@ -32,7 +32,7 @@ static HEBluetooth *instance = nil;
 {
     self = [super init];
     if (self) {
-        self.centralManager = [[HECentralManager alloc] init];
+        _centralManager = [[HECentralManager alloc] init];
     }
     return self;
 }
