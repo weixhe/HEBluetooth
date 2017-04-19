@@ -37,6 +37,26 @@ static HEBluetooth *instance = nil;
     return self;
 }
 
+/*!
+ *  @brief 初始化,设置option：中心设备扫描外设的配置
+ *  @param  scanForPeripheralsWithServices 扫描特定外设数组, 用于扫描一个特定ID的外设, 数组中放服务ID：‘CBUUID’，硬件蓝牙上的某个服
+ *  @param  scanForPeripheralsWithOptions 扫描属性，             see：HEBluetoothOptions -> scanForPeripheralsWithOptions
+ *  @param  connectPeripheralWithOptions 连接设备的参数字典，      see：HEBluetoothOptions -> connectPeripheralWithOptions
+ *  @param  discoverWithServices 发现外设的服务，                 see：HEBluetoothOptions -> discoverWithServices
+ *  @param  discoverWithCharacteristics 发现外设服务中的的特征     see：HEBluetoothOptions -> discoverWithCharacteristics
+ */
+- (void)setOptionsWithScanForPeripheralsWithServices:(NSArray <CBUUID *> *)scanForPeripheralsWithServices
+                       scanForPeripheralsWithOptions:(NSDictionary <NSString *, id> *)scanForPeripheralsWithOptions
+                        connectPeripheralWithOptions:(NSDictionary *) connectPeripheralWithOptions
+                                discoverWithServices:(NSArray *)discoverWithServices
+                         discoverWithCharacteristics:(NSArray *)discoverWithCharacteristics {
+    self.centralManager.bridge.options.scanForPeripheralsWithServices   = scanForPeripheralsWithServices;
+    self.centralManager.bridge.options.scanForPeripheralsWithOptions    = scanForPeripheralsWithOptions;
+    self.centralManager.bridge.options.connectPeripheralWithOptions     = connectPeripheralWithOptions;
+    self.centralManager.bridge.options.discoverWithServices             = discoverWithServices;
+    self.centralManager.bridge.options.discoverWithCharacteristics      = discoverWithCharacteristics;
+}
+
 #pragma mark - Block - CBCentralManagerDelegate
 
 /*!

@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "HECentralManager.h"
 #import "HEBluetoothBridge.h"
-
 #import "HEBluetoothCallback.h"
 
 @interface HEBluetooth : NSObject
@@ -18,6 +17,21 @@
  *  @brief 单例，保证程序中只出现一个对象，控制蓝牙
  */
 + (instancetype)shareBluetooth;
+
+/*!
+ *  @brief 初始化,设置option：中心设备扫描外设的配置
+ *  @param  scanForPeripheralsWithServices 扫描特定外设数组, 用于扫描一个特定ID的外设, 数组中放服务ID：‘CBUUID’，硬件蓝牙上的某个服
+ *  @param  scanForPeripheralsWithOptions 扫描属性，             see：HEBluetoothOptions -> scanForPeripheralsWithOptions
+ *  @param  connectPeripheralWithOptions 连接设备的参数字典，      see：HEBluetoothOptions -> connectPeripheralWithOptions
+ *  @param  discoverWithServices 发现外设的服务，                 see：HEBluetoothOptions -> discoverWithServices
+ *  @param  discoverWithCharacteristics 发现外设服务中的的特征     see：HEBluetoothOptions -> discoverWithCharacteristics
+ */
+- (void)setOptionsWithScanForPeripheralsWithServices:(NSArray <CBUUID *> *)scanForPeripheralsWithServices
+                       scanForPeripheralsWithOptions:(NSDictionary <NSString *, id> *)scanForPeripheralsWithOptions
+                        connectPeripheralWithOptions:(NSDictionary <NSString *, id> *) connectPeripheralWithOptions
+                                discoverWithServices:(NSArray <CBUUID *> *)discoverWithServices
+                         discoverWithCharacteristics:(NSArray *)discoverWithCharacteristics;
+
 
 #pragma mark - Block - CBCentralManagerDelegate
 

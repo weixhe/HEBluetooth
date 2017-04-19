@@ -7,8 +7,6 @@
 //
 
 #import "HEBluetoothBridge.h"
-#import "HEBluetoothOptions.h"
-#import "HEBluetoothCallback.h"
 
 @implementation HEBluetoothBridge
 - (instancetype)init
@@ -16,6 +14,7 @@
     self = [super init];
     if (self) {
         _callback = [[HEBluetoothCallback alloc] init];
+        _options = [[HEBluetoothOptions alloc] init];
     }
     return self;
 }

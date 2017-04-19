@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import <CoreBluetooth/CoreBluetooth.h>
 #import "HEBluetoothDefine.h"
 
 #import "HEBluetooth.h"
@@ -22,6 +23,17 @@
     [super viewDidLoad];
 
     
+    NSArray <CBUUID *> *scanForPeripheralsWithServices = nil;   // @[];
+    NSDictionary <NSString *, id> *scanForPeripheralsWithOptions = @{CBCentralManagerScanOptionAllowDuplicatesKey:@YES};
+    NSDictionary <NSString *, id> *connectPeripheralWithOptions = @{CBConnectPeripheralOptionNotifyOnConnectionKey:@YES};
+    NSArray <CBUUID *> *discoverWithServices = nil; // @[];
+    NSArray <CBUUID *> *discoverWithCharacteristics = nil;  // @[];
+    
+    [[HEBluetooth shareBluetooth] setOptionsWithScanForPeripheralsWithServices:scanForPeripheralsWithServices
+                                                 scanForPeripheralsWithOptions:scanForPeripheralsWithOptions
+                                                  connectPeripheralWithOptions:connectPeripheralWithOptions
+                                                          discoverWithServices:discoverWithServices
+                                                   discoverWithCharacteristics:discoverWithCharacteristics];
     
     
 }

@@ -7,12 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HEBluetoothOptions.h"
+#import "HEBluetoothCallback.h"
 /*!
  *   @brief 蓝牙通讯的桥梁，连接central与callback、options
  */
-@class HEBluetoothOptions;
-@class HEBluetoothCallback;
-
 @interface HEBluetoothBridge : NSObject
 
 @property (nonatomic, strong, readonly) HEBluetoothOptions *options;

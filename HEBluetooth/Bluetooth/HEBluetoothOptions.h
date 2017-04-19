@@ -37,8 +37,6 @@
  */
 @property (nonatomic, copy) NSDictionary <NSString *, id> *connectPeripheralWithOptions;
 
-// =================================================================================
-
 /*!
  *   @brief 发现外设的服务
  *  [peripheral discoverServices:self.discoverWithServices];
@@ -55,7 +53,7 @@
  *   @brief 发现外设服务中的的特征、特性
  *  [peripheral discoverCharacteristics:self.discoverWithCharacteristics forService:service];
  */
-@property (nonatomic, copy) NSArray *discoverWithCharacteristics;
+@property (nonatomic, copy) NSArray <CBUUID *> *discoverWithCharacteristics;
 
 
 #pragma mark - Initial
