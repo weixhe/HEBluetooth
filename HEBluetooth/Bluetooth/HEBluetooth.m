@@ -7,8 +7,6 @@
 //
 
 #import "HEBluetooth.h"
-#import "HEBluetoothBridge.h"
-#import "HEBluetoothCallback.h"
 
 @interface HEBluetooth ()
 
