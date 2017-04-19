@@ -10,6 +10,9 @@
 		048BDDAC1EA64BFF0098CB9D /* HECentralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 048BDDAB1EA64BFE0098CB9D /* HECentralManager.m */; };
 		048BDDAF1EA64E330098CB9D /* HEBluetooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 048BDDAE1EA64E330098CB9D /* HEBluetooth.m */; };
 		048BDDB21EA6510F0098CB9D /* HEBluetoothUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 048BDDB11EA6510F0098CB9D /* HEBluetoothUtility.m */; };
+		450A56FC1EA6FACF0021BF4F /* HEBluetoothOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 450A56FB1EA6FACF0021BF4F /* HEBluetoothOptions.m */; };
+		450A56FF1EA6FB230021BF4F /* HEBluetoothCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = 450A56FE1EA6FB230021BF4F /* HEBluetoothCallback.m */; };
+		450A57411EA706CB0021BF4F /* HEBluetoothBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 450A57401EA706CB0021BF4F /* HEBluetoothBridge.m */; };
 		4557F7821EA5BB4E006005B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7811EA5BB4E006005B3 /* main.m */; };
 		4557F7851EA5BB4E006005B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7841EA5BB4E006005B3 /* AppDelegate.m */; };
 		4557F7881EA5BB4E006005B3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7871EA5BB4E006005B3 /* ViewController.m */; };
@@ -46,6 +49,12 @@
 		048BDDAE1EA64E330098CB9D /* HEBluetooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEBluetooth.m; sourceTree = "<group>"; };
 		048BDDB01EA6510F0098CB9D /* HEBluetoothUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEBluetoothUtility.h; sourceTree = "<group>"; };
 		048BDDB11EA6510F0098CB9D /* HEBluetoothUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEBluetoothUtility.m; sourceTree = "<group>"; };
+		450A56FA1EA6FACF0021BF4F /* HEBluetoothOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEBluetoothOptions.h; sourceTree = "<group>"; };
+		450A56FB1EA6FACF0021BF4F /* HEBluetoothOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEBluetoothOptions.m; sourceTree = "<group>"; };
+		450A56FD1EA6FB230021BF4F /* HEBluetoothCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEBluetoothCallback.h; sourceTree = "<group>"; };
+		450A56FE1EA6FB230021BF4F /* HEBluetoothCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEBluetoothCallback.m; sourceTree = "<group>"; };
+		450A573F1EA706CB0021BF4F /* HEBluetoothBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEBluetoothBridge.h; sourceTree = "<group>"; };
+		450A57401EA706CB0021BF4F /* HEBluetoothBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEBluetoothBridge.m; sourceTree = "<group>"; };
 		4557F77D1EA5BB4E006005B3 /* HEBluetooth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HEBluetooth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4557F7811EA5BB4E006005B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4557F7831EA5BB4E006005B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -101,6 +110,12 @@
 				048BDDAE1EA64E330098CB9D /* HEBluetooth.m */,
 				048BDDB01EA6510F0098CB9D /* HEBluetoothUtility.h */,
 				048BDDB11EA6510F0098CB9D /* HEBluetoothUtility.m */,
+				450A573F1EA706CB0021BF4F /* HEBluetoothBridge.h */,
+				450A57401EA706CB0021BF4F /* HEBluetoothBridge.m */,
+				450A56FD1EA6FB230021BF4F /* HEBluetoothCallback.h */,
+				450A56FE1EA6FB230021BF4F /* HEBluetoothCallback.m */,
+				450A56FA1EA6FACF0021BF4F /* HEBluetoothOptions.h */,
+				450A56FB1EA6FACF0021BF4F /* HEBluetoothOptions.m */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -311,11 +326,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				450A56FF1EA6FB230021BF4F /* HEBluetoothCallback.m in Sources */,
 				048BDDAF1EA64E330098CB9D /* HEBluetooth.m in Sources */,
 				4557F7881EA5BB4E006005B3 /* ViewController.m in Sources */,
 				048BDDB21EA6510F0098CB9D /* HEBluetoothUtility.m in Sources */,
 				4557F7851EA5BB4E006005B3 /* AppDelegate.m in Sources */,
 				048BDDAC1EA64BFF0098CB9D /* HECentralManager.m in Sources */,
+				450A56FC1EA6FACF0021BF4F /* HEBluetoothOptions.m in Sources */,
+				450A57411EA706CB0021BF4F /* HEBluetoothBridge.m in Sources */,
 				4557F7821EA5BB4E006005B3 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -466,6 +484,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = HEBluetooth/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.fumubang.HEBluetooth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -477,6 +496,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = HEBluetooth/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.fumubang.HEBluetooth;
 				PRODUCT_NAME = "$(TARGET_NAME)";

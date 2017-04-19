@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HECentralManager.h"
 
 @interface HEBluetooth : NSObject
 

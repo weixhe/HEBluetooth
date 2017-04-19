@@ -9,7 +9,10 @@
 #import "ViewController.h"
 #import "HEBluetoothDefine.h"
 
+#import "HEBluetooth.h"
+
 @interface ViewController ()
+
 
 @end
 
@@ -18,8 +21,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    DLog(@"adfasf");
-
+    
+    
+    
 }
 
 
