@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "HECentralManager.h"
+#import "HEPeripheralManager.h"
 #import "HEBluetoothBridge.h"
 #import "HEBluetoothCallback.h"
 
@@ -143,4 +144,52 @@
  *   @brief 从外设的某个特征中读取详细内容
  */
 - (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist;
+
+#pragma mark - PeripheralManager
+
+/*!
+ *  @brief 外设(设备) 添加服务
+ */
+- (void)setBlockOnDidAddService:(HEPeripheralDidAddService)block;
+
+/*!
+ *  @brief 外设(设备) 状态改变
+ */
+- (void)setBlockOnDidUpdateState:(HEPeripheralDidUpdateState)block;
+
+/*!
+ *  @brief 外设(设备) 从后台恢复
+ */
+- (void)setBlockOnWillRestoreState:(HEPeripheralWillRestoreState)block;
+
+/*!
+ *  @brief 外设（设备）开始广播
+ */
+- (void)setBlockOnDidStartAdvertising:(HEPeripheralDidStartAdvertising)block;
+
+/*!
+ *  @brief 当一个central设备订阅一个特征值时调用
+ */
+- (void)setBlockOnDidSubscribeToCharacteristic:(HEPeripheralDidSubscribeToCharacteristic)block;
+
+/*!
+ *  @brief 取消订阅一个特征值时调用的方法
+ */
+- (void)setBlockOnDidUnsubscribeToCharacteristic:(HEPeripheralDidUnsubscribeToCharacteristic)block;
+
+/*!
+ *  @brief 收到读请求时触发的方法
+ */
+- (void)setBlockOnDidReceiveReadRequest:(HEPeripheralDidReceiveReadRequest)block;
+
+/*!
+ *  @brief 收到写请求时触发的方法
+ */
+- (void)setBlockOnDidReceiveWriteRequests:(HEPeripheralDidReceiveWriteRequests)block;
+
+/*!
+ *  @brief 外设准备更新特征值时调用的方法
+ */
+- (void)setBlockOnIsReadyToUpdateSubscribers:(HEPeripheralDidIsReadyToUpdateSubscribers)block;
+
 @end

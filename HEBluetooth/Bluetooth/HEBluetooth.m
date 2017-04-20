@@ -12,6 +12,8 @@
 
 @property (nonatomic, strong) HECentralManager *centralManager;
 
+@property (nonatomic, strong) HEPeripheralManager *peripheralManager;
+
 @end
 
 static HEBluetooth *instance = nil;
@@ -33,6 +35,7 @@ static HEBluetooth *instance = nil;
     self = [super init];
     if (self) {
         _centralManager = [[HECentralManager alloc] init];
+        _peripheralManager = [[HEPeripheralManager alloc] init];
     }
     return self;
 }
@@ -250,5 +253,70 @@ static HEBluetooth *instance = nil;
 //- (void)cancelScan{
 //    [babyCentralManager cancelScan];
 //}
+
+#pragma mark - PeripheralManager
+
+/*!
+ *  @brief 外设(设备) 添加服务
+ */
+- (void)setBlockOnDidAddService:(HEPeripheralDidAddService)block {
+    self.peripheralManager.bridge.callback.blockOnDidAddService = block;
+}
+
+/*!
+ *  @brief 外设(设备) 状态改变
+ */
+- (void)setBlockOnDidUpdateState:(HEPeripheralDidUpdateState)block {
+    self.peripheralManager.bridge.callback.blockOnDidUpdateState = block;
+}
+
+/*!
+ *  @brief 外设(设备) 从后台恢复
+ */
+- (void)setBlockOnWillRestoreState:(HEPeripheralWillRestoreState)block {
+    self.peripheralManager.bridge.callback.blockOnWillRestoreState = block;
+}
+
+/*!
+ *  @brief 外设（设备）开始广播
+ */
+- (void)setBlockOnDidStartAdvertising:(HEPeripheralDidStartAdvertising)block {
+    self.peripheralManager.bridge.callback.blockOnDidStartAdvertising = block;
+}
+
+/*!
+ *  @brief 当一个central设备订阅一个特征值时调用
+ */
+- (void)setBlockOnDidSubscribeToCharacteristic:(HEPeripheralDidSubscribeToCharacteristic)block {
+    self.peripheralManager.bridge.callback.blockOnDidSubscribeToCharacteristic = block;
+}
+
+/*!
+ *  @brief 取消订阅一个特征值时调用的方法
+ */
+- (void)setBlockOnDidUnsubscribeToCharacteristic:(HEPeripheralDidUnsubscribeToCharacteristic)block {
+    self.peripheralManager.bridge.callback.blockOnDidUnsubscribeToCharacteristic = block;
+}
+
+/*!
+ *  @brief 收到读请求时触发的方法
+ */
+- (void)setBlockOnDidReceiveReadRequest:(HEPeripheralDidReceiveReadRequest)block {
+    self.peripheralManager.bridge.callback.blockOnDidReceiveReadRequest = block;
+}
+
+/*!
+ *  @brief 收到写请求时触发的方法
+ */
+- (void)setBlockOnDidReceiveWriteRequests:(HEPeripheralDidReceiveWriteRequests)block {
+    self.peripheralManager.bridge.callback.blockOnDidReceiveWriteRequests = block;
+}
+
+/*!
+ *  @brief 外设准备更新特征值时调用的方法
+ */
+- (void)setBlockOnIsReadyToUpdateSubscribers:(HEPeripheralDidIsReadyToUpdateSubscribers)block {
+    self.peripheralManager.bridge.callback.blockOnIsReadyToUpdateSubscribers = block;
+}
 
 @end
