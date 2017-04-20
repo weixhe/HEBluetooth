@@ -18,6 +18,9 @@
     NSMutableArray *connectedPeripherals;       // 已经连接的设备、外设
     NSMutableArray *discoverPeripherals;        // 已经连接的设备、外设
     NSMutableArray *autoReconnectPeripherals;   // 需要自动重连的设备、外设
+    
+    // 蓝牙状态
+    HEBluetoothState bluetoothState;
 }
 
 @property (nonatomic, strong) CBCentralManager *centralManager;         // 中心设备管理器
@@ -190,63 +193,72 @@
  *          这个方法中可以获取到管理中心的状态
  */
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
 
-    if (IOS_Equal_or_Above(10)) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         switch (central.state) {
             case CBManagerStateUnknown:
+                bluetoothState = HEBluetoothStateUnknown;
                 DLog(@">>>中心设备-状态未知");
                 break;
             case CBManagerStateResetting:
+                bluetoothState = HEBluetoothStateResetting;
                 DLog(@">>>中心设备-连接断开 即将重置");
                 break;
             case CBManagerStateUnsupported:
+                bluetoothState = HEBluetoothStateUnsupported;
                 DLog(@">>>中心设备-该平台不支持蓝牙");
                 break;
             case CBManagerStateUnauthorized:
+                bluetoothState = HEBluetoothStateUnauthorized;
                 DLog(@">>>中心设备-未授权蓝牙使用");
                 break;
             case CBManagerStatePoweredOff:
+                bluetoothState = HEBluetoothStatePoweredOff;
                 DLog(@">>>中心设备-蓝牙关闭");
                 break;
             case CBManagerStatePoweredOn:
+                bluetoothState = HEBluetoothStatePoweredOn;
                 DLog(@">>>中心设备-蓝牙正常开启");
                 
                 break;
             default:
                 break;
         }
-#endif
-    } else {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
+#else
         switch (central.state) {
             case CBCentralManagerStateUnknown:
+                bluetoothState = HEBluetoothStateUnknown;
                 DLog(@">>>中心设备-状态未知");
                 break;
             case CBCentralManagerStateResetting:
+                bluetoothState = HEBluetoothStateResetting;
                 DLog(@">>>中心设备-连接断开 即将重置");
                 break;
             case CBCentralManagerStateUnsupported:
+                bluetoothState = HEBluetoothStateUnsupported;
                 DLog(@">>>中心设备-该平台不支持蓝牙");
                 break;
             case CBCentralManagerStateUnauthorized:
+                bluetoothState = HEBluetoothStateUnauthorized;
                 DLog(@">>>中心设备-未授权蓝牙使用");
                 break;
             case CBCentralManagerStatePoweredOff:
+                bluetoothState = HEBluetoothStatePoweredOff;
                 DLog(@">>>中心设备-蓝牙关闭");
                 break;
             case CBCentralManagerStatePoweredOn:
+                bluetoothState = HEBluetoothStatePoweredOn;
                 DLog(@">>>中心设备-蓝牙正常开启");
                 break;
             default:
                 break;
         }
 #endif
-    }
     
     // 状态改变callback
     if (self.bridge.callback.blockOnUpdateCentralState) {
-        self.bridge.callback.blockOnUpdateCentralState(central);
+        self.bridge.callback.blockOnUpdateCentralState(bluetoothState);
     }
 
 }
@@ -405,10 +417,6 @@
 }
 
 #else
-
-/*!
- *   @brief 读取信号强度回调的方法
- */
 - (void)peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(nullable NSError *)error NS_AVAILABLE(NA, 8_0) {
     DLog(@">>>外设读取信号强度RSSI： %@\n", RSSI);
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {

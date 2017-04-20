@@ -7,12 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HEBluetoothDefine.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 
 //================================================================================
 
 // 中心设备状态改变
-typedef void (^HECentralManagerDidUpdateStateBlock)(CBCentralManager *central);
+typedef void (^HECentralManagerDidUpdateStateBlock)(HEBluetoothState bluetoothState);
 
 // 中心设备扫描到设备回调
 typedef void(^HECentralDiscoverPeripheralsBlock)(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI);

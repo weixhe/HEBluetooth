@@ -42,9 +42,8 @@
 }
 
 - (void)bluetoothDelegate {
-    [[HEBluetooth shareBluetooth] setBlockOnCentralManagerDidUpdateState:^(CBCentralManager *central) {
+    [[HEBluetooth shareBluetooth] setBlockOnCentralManagerDidUpdateState:^(HEBluetoothState bluetoothState) {
         NSLog(@"0000-中心设备状态修改");
-        
     }];
     
     [[HEBluetooth shareBluetooth] setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {

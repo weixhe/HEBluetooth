@@ -36,4 +36,16 @@
 #define isIOS9  ([[[UIDevice currentDevice] systemVersion] intValue] == 9 ? (YES):(NO))
 #define isIOS10 ([[[UIDevice currentDevice] systemVersion] intValue] == 10 ? (YES):(NO))
 
+/*!
+ *   @brief 蓝牙状态
+ */
+typedef NS_ENUM(NSUInteger, HEBluetoothState) {
+    HEBluetoothStateUnknown,            // 状态未知
+    HEBluetoothStateResetting,          // 连接断开 即将重置
+    HEBluetoothStateUnsupported,        // 该平台不支持蓝牙
+    HEBluetoothStateUnauthorized,       // 未授权蓝牙使用
+    HEBluetoothStatePoweredOff,         // 蓝牙关闭
+    HEBluetoothStatePoweredOn           // 蓝牙正常开启
+};
+
 #endif /* HEBluetoothDefine_h */
