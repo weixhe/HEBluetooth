@@ -48,7 +48,7 @@
  */
 - (void)addServices:(NSArray *)services {
     if (self.bluetoothState != HEBluetoothStatePoweredOn) {
-        _services = [NSArray arrayWithArray:services];
+        _services = [NSMutableArray arrayWithArray:services];
         for (CBMutableService *s in self.services) {
             [_peripheralManager addService:s];
         }
@@ -66,16 +66,20 @@
  *  @brief 删除某一个服务
  */
 - (void)removeServices:(CBMutableService *)service {
-    didAddServices--;
-    [self.peripheralManager removeService:service];
+    if ([self.services containsObject:service]) {
+        didAddServices--;
+        [self.peripheralManager removeService:service];        
+    }
 }
 
 /*!
  *   @brief 删除所有的服务
  */
 - (void)removeAllServices {
-    didAddServices = 0;
-    [self.peripheralManager removeAllServices];
+    if (self.services.count != 0) {
+        didAddServices = 0;
+        [self.peripheralManager removeAllServices];
+    }
 }
 
 /*!

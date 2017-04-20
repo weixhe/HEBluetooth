@@ -23,7 +23,7 @@
 
 @property (nonatomic, copy, readonly) NSString *localName;                // 设备名称
 
-@property (nonatomic, strong, readonly) NSArray *services;         // 设备服务
+@property (nonatomic, strong, readonly) NSMutableArray *services;         // 设备服务
 
 @property (nonatomic, strong, readonly) NSData *advertisementData;         // 设备广播包数据
 
