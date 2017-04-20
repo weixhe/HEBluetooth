@@ -244,27 +244,27 @@
 
         switch (central.state) {
             case CBManagerStateUnknown:
-                bluetoothState = HEBluetoothStateUnknown;
+                _bluetoothState = HEBluetoothStateUnknown;
                 DLog(@">>>中心设备-状态未知");
                 break;
             case CBManagerStateResetting:
-                bluetoothState = HEBluetoothStateResetting;
+                _bluetoothState = HEBluetoothStateResetting;
                 DLog(@">>>中心设备-连接断开 即将重置");
                 break;
             case CBManagerStateUnsupported:
-                bluetoothState = HEBluetoothStateUnsupported;
+                _bluetoothState = HEBluetoothStateUnsupported;
                 DLog(@">>>中心设备-该平台不支持蓝牙");
                 break;
             case CBManagerStateUnauthorized:
-                bluetoothState = HEBluetoothStateUnauthorized;
+                _bluetoothState = HEBluetoothStateUnauthorized;
                 DLog(@">>>中心设备-未授权蓝牙使用");
                 break;
             case CBManagerStatePoweredOff:
-                bluetoothState = HEBluetoothStatePoweredOff;
+                _bluetoothState = HEBluetoothStatePoweredOff;
                 DLog(@">>>中心设备-蓝牙关闭");
                 break;
             case CBManagerStatePoweredOn:
-                bluetoothState = HEBluetoothStatePoweredOn;
+                _bluetoothState = HEBluetoothStatePoweredOn;
                 DLog(@">>>中心设备-蓝牙正常开启");
                 
                 break;

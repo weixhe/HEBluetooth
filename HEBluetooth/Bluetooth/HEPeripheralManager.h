@@ -27,38 +27,55 @@
 
 @property (nonatomic, strong) NSData *manufacturerData;         // 设备广播包数据
 
+@property (nonatomic, assign) HEBluetoothState bluetoothState;  // 蓝牙状态
+
 #pragma mark - Method
+
+/*!
+ *   @brief 添加一些服务，参数：数组
+ */
+- (void)addServices:(NSArray *)services;
+
+/*!
+ *   @brief 删除所有的服务
+ */
+- (void)removeAllServices;
+
+/*!
+ *   @brief 添加一个广播包，连接到设备时可以读取到
+ */
+- (void)addManufacturerData:(NSData *)data;
+
+/*!
+ *   @brief 停止广播
+ */
+- (void)stopAdvertising;
 
 
 @end
 
 
-/**
- *  构造Characteristic，并加入service
- *  service:CBService
- 
+/*！
+ *  @brief 生成一个服务的特征，包含了数据data和只读（只写、通知、读写）性，特征中又包含了一个描述值
  *  param`ter for properties ：option 'r' | 'w' | 'n' or combination
  *	r                       CBCharacteristicPropertyRead
  *	w                       CBCharacteristicPropertyWrite
  *	n                       CBCharacteristicPropertyNotify
  *  default value is rw     Read-Write
- 
- *  paramter for descriptor：be uesd descriptor for characteristic
  */
-
 void makeCharacteristicToService(CBMutableService *service, NSString *UUID, NSString *properties, NSString *descriptor);
 
-/**
+/*！
  *  构造一个包含初始值的Characteristic，并加入service,包含了初值的characteristic必须设置permissions和properties都为只读
- *  make characteristic then add to service, a static characteristic mean it has a initial value .according apple rule, it must set properties and permissions to CBCharacteristicPropertyRead and CBAttributePermissionsReadable
  */
 void makeStaticCharacteristicToService(CBMutableService *service, NSString *UUID, NSString *descriptor, NSData *data);
-/**
- 生成CBService
+
+/*!
+ *   @brief 根据UUID生成一个服务
  */
 CBMutableService * makeCBService(NSString *UUID);
 
-/**
- 生成UUID
+/*!
+ *   @brief 生成一个UUID
  */
-NSString * genUUID();
+NSString *genUUID();

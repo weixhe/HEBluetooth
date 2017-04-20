@@ -8,8 +8,99 @@
 
 #import "HEPeripheralManager.h"
 
+@interface HEPeripheralManager ()
+{
+    int PERIPHERAL_MANAGER_INIT_WAIT_TIMES;
+    int didAddServices;     // 添加了服务的个数
+}
+
+@end
+
 @implementation HEPeripheralManager
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _localName = @"heperipheral-default-name";
+        
+    }
+    return self;
+}
+
+#pragma mark - Accessors
+
+- (CBPeripheralManager *)peripheralManager {
+    if (!_peripheralManager) {
+        _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+    }
+    return _peripheralManager;
+}
+
+#pragma mark - Method
+
+/*!
+ *   @brief 添加一些服务，参数：数组
+ */
+- (void)addServices:(NSArray *)services {
+    
+    if (self.bluetoothState == HEBluetoothStatePoweredOn) {
+
+        PERIPHERAL_MANAGER_INIT_WAIT_TIMES = 0;
+        NSMutableArray *UUIDS = [NSMutableArray array];
+        for (CBMutableService *s in _services) {
+            [UUIDS addObject:s.UUID];
+        }
+        
+        // 启动广播
+        if (_manufacturerData) {
+            [_peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey:UUIDS,
+                                                   CBAdvertisementDataLocalNameKey:_localName,
+                                                   CBAdvertisementDataManufacturerDataKey:_manufacturerData}];
+        } else {
+            [_peripheralManager startAdvertising: @{CBAdvertisementDataServiceUUIDsKey:UUIDS, CBAdvertisementDataLocalNameKey:_localName}];
+        }
+        return;
+    } else {
+        PERIPHERAL_MANAGER_INIT_WAIT_TIMES++;
+        if (PERIPHERAL_MANAGER_INIT_WAIT_TIMES > 5) {
+            DLog(@">>>error： 第%d次等待peripheralManager打开任然失败，请检查蓝牙设备是否可用", PERIPHERAL_MANAGER_INIT_WAIT_TIMES);
+        }
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self addServices:services];
+        });
+        DLog(@">>> 第%d次等待peripheralManager打开", PERIPHERAL_MANAGER_INIT_WAIT_TIMES);
+    }
+    
+//    if (didAddServices != services.count) {
+//        DLog(@">>>");
+//        return;
+//    }
+
+    
+}
+
+/*!
+ *   @brief 删除所有的服务
+ */
+- (void)removeAllServices {
+    
+}
+
+/*!
+ *   @brief 添加一个广播包，连接到设备时可以读取到
+ */
+- (void)addManufacturerData:(NSData *)data {
+    
+}
+
+/*!
+ *   @brief 停止广播
+ */
+- (void)stopAdvertising {
+    
+}
 
 #pragma mark - CBPeripheralManagerDelegate
 
@@ -17,7 +108,70 @@
  *   @brief 这个方法是必须实现的 状态可用后可以发送广播
  */
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
     
+    switch (peripheral.state) {
+        case CBManagerStateUnknown:
+            _bluetoothState = HEBluetoothStateUnknown;
+            DLog(@">>>外设管理中心-状态未知");
+            break;
+        case CBManagerStateResetting:
+            _bluetoothState = HEBluetoothStateResetting;
+            DLog(@">>>外设管理中心-连接断开 即将重置");
+            break;
+        case CBManagerStateUnsupported:
+            _bluetoothState = HEBluetoothStateUnsupported;
+            DLog(@">>>外设管理中心-该平台不支持蓝牙");
+            break;
+        case CBManagerStateUnauthorized:
+            _bluetoothState = HEBluetoothStateUnauthorized;
+            DLog(@">>>外设管理中心-未授权蓝牙使用");
+            break;
+        case CBManagerStatePoweredOff:
+            _bluetoothState = HEBluetoothStatePoweredOff;
+            DLog(@">>>外设管理中心-蓝牙关闭");
+            break;
+        case CBManagerStatePoweredOn:
+            _bluetoothState = HEBluetoothStatePoweredOn;
+            DLog(@">>>外设管理中心-蓝牙正常开启");
+            
+            break;
+        default:
+            break;
+    }
+#else
+    switch (peripheral.state) {
+        case CBPeripheralManagerStateUnknown:
+            _bluetoothState = HEBluetoothStateUnknown;
+            DLog(@">>>外设管理中心-状态未知");
+            break;
+        case CBPeripheralManagerStateResetting:
+            _bluetoothState = HEBluetoothStateResetting;
+            DLog(@">>>外设管理中心-连接断开 即将重置");
+            break;
+        case CBPeripheralManagerStateUnsupported:
+            _bluetoothState = HEBluetoothStateUnsupported;
+            DLog(@">>>外设管理中心-该平台不支持蓝牙");
+            break;
+        case CBPeripheralManagerStateUnauthorized:
+            _bluetoothState = HEBluetoothStateUnauthorized;
+            DLog(@">>>外设管理中心-未授权蓝牙使用");
+            break;
+        case CBPeripheralManagerStatePoweredOff:
+            _bluetoothState = HEBluetoothStatePoweredOff;
+            DLog(@">>>外设管理中心-蓝牙关闭");
+            break;
+        case CBPeripheralManagerStatePoweredOn:
+            _bluetoothState = HEBluetoothStatePoweredOn;
+            DLog(@">>>外设管理中心-蓝牙正常开启");
+            break;
+        default:
+            break;
+    }
+#endif
+
+
 }
 
 /*!
@@ -80,7 +234,9 @@
 
 @end
 
-
+/*!
+ *   @brief 生成一个服务的特征，包含了数据data和只读（只写、通知、读写）性，特征中又包含了一个描述值
+ */
 void makeCharacteristicToService(CBMutableService *service, NSString *UUID, NSString *properties, NSString *descriptor) {
     
     // paramter for properties
@@ -102,9 +258,9 @@ void makeCharacteristicToService(CBMutableService *service, NSString *UUID, NSSt
     
     // paramter for descriptor
     if (!(descriptor == nil || [descriptor isEqualToString:@""])) {
-        //c设置description对应的haracteristics字段描述
+        // c设置description对应的haracteristics字段描述
         CBUUID *CBUUIDCharacteristicUserDescriptionStringUUID = [CBUUID UUIDWithString:CBUUIDCharacteristicUserDescriptionString];
-        CBMutableDescriptor *desc = [[CBMutableDescriptor alloc]initWithType: CBUUIDCharacteristicUserDescriptionStringUUID value:descriptor];
+        CBMutableDescriptor *desc = [[CBMutableDescriptor alloc] initWithType: CBUUIDCharacteristicUserDescriptionStringUUID value:descriptor];
         [c setDescriptors:@[desc]];
     }
     
@@ -116,15 +272,18 @@ void makeCharacteristicToService(CBMutableService *service, NSString *UUID, NSSt
     service.characteristics = [cs copy];
 }
 
+/*!
+ *   @brief 构造一个包含初始值的Characteristic，并加入service,包含了初值的characteristic必须设置permissions和properties都为只读
+ */
 void makeStaticCharacteristicToService(CBMutableService *service, NSString *UUID, NSString *descriptor, NSData *data) {
     
-    CBMutableCharacteristic *c = [[CBMutableCharacteristic alloc]initWithType:[CBUUID UUIDWithString:UUID] properties:CBCharacteristicPropertyRead  value:data permissions:CBAttributePermissionsReadable];
+    CBMutableCharacteristic *c = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:UUID] properties:CBCharacteristicPropertyRead  value:data permissions:CBAttributePermissionsReadable];
     
-    //paramter for descriptor
+    // paramter for descriptor
     if (!(descriptor == nil || [descriptor isEqualToString:@""])) {
-        //c设置description对应的haracteristics字段描述
+        // c设置description对应的haracteristics字段描述
         CBUUID *CBUUIDCharacteristicUserDescriptionStringUUID = [CBUUID UUIDWithString:CBUUIDCharacteristicUserDescriptionString];
-        CBMutableDescriptor *desc = [[CBMutableDescriptor alloc]initWithType: CBUUIDCharacteristicUserDescriptionStringUUID value:descriptor];
+        CBMutableDescriptor *desc = [[CBMutableDescriptor alloc] initWithType: CBUUIDCharacteristicUserDescriptionStringUUID value:descriptor];
         [c setDescriptors:@[desc]];
     }
     
@@ -137,19 +296,25 @@ void makeStaticCharacteristicToService(CBMutableService *service, NSString *UUID
 }
 
 
-CBMutableService * makeCBService(NSString *UUID) {
+/*!
+ *   @brief 根据UUID生成一个服务
+ */
+CBMutableService *makeCBService(NSString *UUID) {
     
-    CBMutableService *s = [[CBMutableService alloc]initWithType:[CBUUID UUIDWithString:UUID] primary:YES];
+    CBMutableService *s = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:UUID] primary:YES];
     return s;
 }
 
-NSString * genUUID() {
+/*!
+ *   @brief 生成一个UUID
+ */
+NSString *genUUID() {
     
     CFUUIDRef uuid_ref = CFUUIDCreate(NULL);
-    CFStringRef uuid_string_ref= CFUUIDCreateString(NULL, uuid_ref);
+    CFStringRef uuid_string_ref = CFUUIDCreateString(NULL, uuid_ref);
     
     CFRelease(uuid_ref);
-    NSString *uuid = [NSString stringWithString:(__bridge NSString*)uuid_string_ref];
+    NSString *uuid = [NSString stringWithString:(__bridge NSString *)uuid_string_ref];
     
     CFRelease(uuid_string_ref);
     return uuid;
