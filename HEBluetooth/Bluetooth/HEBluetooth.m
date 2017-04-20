@@ -215,6 +215,14 @@ static HEBluetooth *instance = nil;
     }
 }
 
+//- (void)connectPeripheral:(CBPeripheral *)peripheral autoReadCharacteristic:(BOOL)autoReadCharacteristic {
+//    if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
+//        self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
+//        self.centralManager.autoReadValueForCharacteristic = YES;       // 连接成功有直接读取特征值
+//        [self.centralManager connectToPeripheral:peripheral];
+//    }
+//}
+
 /*!
  *   @brief 从外设的某个特征中读取详细内容
  */
@@ -229,5 +237,18 @@ static HEBluetooth *instance = nil;
         DLog(@"外设 %@ 非连接状态", peripheral.name);
     }
 }
+
+////断开连接
+//- (void)cancelPeripheralConnection:(CBPeripheral *)peripheral {
+//    [babyCentralManager cancelPeripheralConnection:peripheral];
+//}
+////断开所有连接
+//- (void)cancelAllPeripheralsConnection {
+//    [babyCentralManager cancelAllPeripheralsConnection];
+//}
+////停止扫描
+//- (void)cancelScan{
+//    [babyCentralManager cancelScan];
+//}
 
 @end

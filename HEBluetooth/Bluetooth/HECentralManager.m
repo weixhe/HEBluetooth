@@ -98,21 +98,27 @@
  */
 - (void)scanPeripherals {
     
-//    if (bluetoothState == HEBluetoothStatePoweredOn) {
+    if (self.bluetoothState == HEBluetoothStatePoweredOn) {
         // serviceUUIDs用于扫描一个特点ID的外设 options用于设置一些扫描属性，查看：scanForPeripheralsWithServices ， scanForPeripheralsWithOptions
         [self.centralManager scanForPeripheralsWithServices:self.bridge.options.scanForPeripheralsWithServices options:self.bridge.options.scanForPeripheralsWithOptions];
         scanTimeLength = 0;
 
         self.scanTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(scanTimerRunning) userInfo:nil repeats:YES];
-    //    }
-    
+    }
 }
-    
+
+/*!
+ *   @brief 扫描定时器超时，停止扫描
+ */
 - (void)scanTimerRunning {
     if (self.bridge.callback.blockOnDidScanPerippherals) {
         BOOL stop = NULL;
         self.bridge.callback.blockOnDidScanPerippherals(self.centralManager, ++scanTimeLength, &stop);
         if (stop) {
+            [self cancelScan];
+        }
+    } else {
+        if (scanTimeLength >= 60) {
             [self cancelScan];
         }
     }
@@ -125,7 +131,17 @@
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         [self.centralManager connectPeripheral:peripheral options:self.bridge.options.connectPeripheralWithOptions];
+        // 开一个定时器监控连接超时的情况
+        self.connectTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(connectTimerRunning:) userInfo:peripheral repeats:NO];
     }
+}
+
+/*!
+ *   @brief 连接定时器超时，停止连接
+ */
+- (void)connectTimerRunning:(NSTimer *)timer {
+    DLog(@">>>连接设备超时, 已取消连接");
+    [self cancelPeripheralConnection:(CBPeripheral *)timer.userInfo];
 }
 
 
@@ -143,7 +159,7 @@
  */
 - (void)cancelAllPeripheralsConnection {
     for (CBPeripheral *peripheral in connectedPeripherals) {
-        [self.centralManager cancelPeripheralConnection:peripheral];
+        [self cancelPeripheralConnection:peripheral];
     }
 }
 
@@ -159,6 +175,7 @@
         self.scanTimer = nil;
         scanTimeLength = 0;
     }
+    
     // block回调
     if(self.bridge.callback.blockOnCancelScan) {
         self.bridge.callback.blockOnCancelScan(self.centralManager);
@@ -317,16 +334,8 @@
         // 是否自动连接外设
         if (self.autoConnectPeripheral) {
             [self connectToPeripheral:peripheral];
-            // 开一个定时器监控连接超时的情况
-            self.connectTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(disconnect:) userInfo:peripheral repeats:NO];
         }
     }
-}
-
-// 定时器超时，停止扫描
-- (void)disconnect:(id)sender {
-    DLog(@">>>链接设备超时, 已取消");
-    [self cancelScan];
 }
 
 /*!

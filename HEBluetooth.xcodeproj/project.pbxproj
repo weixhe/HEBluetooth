@@ -22,6 +22,7 @@
 		4557F79B1EA5BB4E006005B3 /* HEBluetoothTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F79A1EA5BB4E006005B3 /* HEBluetoothTests.m */; };
 		4557F7A61EA5BB4E006005B3 /* HEBluetoothUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7A51EA5BB4E006005B3 /* HEBluetoothUITests.m */; };
 		4557F7B81EA5F644006005B3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4557F7B71EA5F644006005B3 /* CoreBluetooth.framework */; };
+		456304B51EA8B49800038FBF /* HEPeripheralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 456304B41EA8B49800038FBF /* HEPeripheralManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,8 @@
 		4557F7A51EA5BB4E006005B3 /* HEBluetoothUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HEBluetoothUITests.m; sourceTree = "<group>"; };
 		4557F7A71EA5BB4E006005B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4557F7B71EA5F644006005B3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		456304B31EA8B49800038FBF /* HEPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEPeripheralManager.h; sourceTree = "<group>"; };
+		456304B41EA8B49800038FBF /* HEPeripheralManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEPeripheralManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +109,8 @@
 				048BDDA91EA649F60098CB9D /* HEBluetoothDefine.h */,
 				048BDDAA1EA64BFE0098CB9D /* HECentralManager.h */,
 				048BDDAB1EA64BFE0098CB9D /* HECentralManager.m */,
+				456304B31EA8B49800038FBF /* HEPeripheralManager.h */,
+				456304B41EA8B49800038FBF /* HEPeripheralManager.m */,
 				048BDDAD1EA64E330098CB9D /* HEBluetooth.h */,
 				048BDDAE1EA64E330098CB9D /* HEBluetooth.m */,
 				048BDDB01EA6510F0098CB9D /* HEBluetoothUtility.h */,
@@ -331,6 +336,7 @@
 				048BDDAF1EA64E330098CB9D /* HEBluetooth.m in Sources */,
 				4557F7881EA5BB4E006005B3 /* ViewController.m in Sources */,
 				048BDDB21EA6510F0098CB9D /* HEBluetoothUtility.m in Sources */,
+				456304B51EA8B49800038FBF /* HEPeripheralManager.m in Sources */,
 				4557F7851EA5BB4E006005B3 /* AppDelegate.m in Sources */,
 				048BDDAC1EA64BFF0098CB9D /* HECentralManager.m in Sources */,
 				450A56FC1EA6FACF0021BF4F /* HEBluetoothOptions.m in Sources */,
