@@ -12,11 +12,15 @@
 {
     int PERIPHERAL_MANAGER_INIT_WAIT_TIMES;
     int didAddServices;     // 添加了服务的个数
+    NSTimer *addServiceTimer;
 }
 
 @end
 
 @implementation HEPeripheralManager
+
+@synthesize peripheralManager = _peripheralManager, localName = _localName;
+@synthesize bridge = _bridge, services = _services, advertisementData = _advertisementData;
 
 - (instancetype)init
 {
@@ -40,66 +44,98 @@
 #pragma mark - Method
 
 /*!
- *   @brief 添加一些服务，参数：数组
+ *   @brief 添加一些服务，参数：数组, 同时启动广播
  */
 - (void)addServices:(NSArray *)services {
-    
-    if (self.bluetoothState == HEBluetoothStatePoweredOn) {
-
-        PERIPHERAL_MANAGER_INIT_WAIT_TIMES = 0;
-        NSMutableArray *UUIDS = [NSMutableArray array];
-        for (CBMutableService *s in _services) {
-            [UUIDS addObject:s.UUID];
+    if (self.bluetoothState != HEBluetoothStatePoweredOn) {
+        _services = [NSArray arrayWithArray:services];
+        for (CBMutableService *s in self.services) {
+            [_peripheralManager addService:s];
         }
-        
-        // 启动广播
-        if (_manufacturerData) {
-            [_peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey:UUIDS,
-                                                   CBAdvertisementDataLocalNameKey:_localName,
-                                                   CBAdvertisementDataManufacturerDataKey:_manufacturerData}];
-        } else {
-            [_peripheralManager startAdvertising: @{CBAdvertisementDataServiceUUIDsKey:UUIDS, CBAdvertisementDataLocalNameKey:_localName}];
-        }
-        return;
     } else {
-        PERIPHERAL_MANAGER_INIT_WAIT_TIMES++;
-        if (PERIPHERAL_MANAGER_INIT_WAIT_TIMES > 5) {
-            DLog(@">>>error： 第%d次等待peripheralManager打开任然失败，请检查蓝牙设备是否可用", PERIPHERAL_MANAGER_INIT_WAIT_TIMES);
-        }
+        
+        // 如果蓝牙没有打开，3s后再次重试
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self addServices:services];
+            [self addServices:self.services];
         });
-        DLog(@">>> 第%d次等待peripheralManager打开", PERIPHERAL_MANAGER_INIT_WAIT_TIMES);
     }
-    
-//    if (didAddServices != services.count) {
-//        DLog(@">>>");
-//        return;
-//    }
+}
 
-    
+/*!
+ *  @brief 删除某一个服务
+ */
+- (void)removeServices:(CBMutableService *)service {
+    didAddServices--;
+    [self.peripheralManager removeService:service];
 }
 
 /*!
  *   @brief 删除所有的服务
  */
 - (void)removeAllServices {
-    
+    didAddServices = 0;
+    [self.peripheralManager removeAllServices];
 }
 
 /*!
  *   @brief 添加一个广播包，连接到设备时可以读取到
  */
 - (void)addManufacturerData:(NSData *)data {
+    _advertisementData = data;
+}
+
+/*!
+ *  @brief 启动广播
+ */
+- (void)startAdvertising {
     
+    if (self.peripheralManager.isAdvertising) {
+        DLog(@">>>正在广播中，无需再次开启");
+        return;
+    }
+    
+    // 蓝牙打开，并且添加的服务数一致，则开启广播
+    if (self.bluetoothState == HEBluetoothStatePoweredOn && self.services.count == didAddServices) {
+        
+        PERIPHERAL_MANAGER_INIT_WAIT_TIMES = 0;
+        NSMutableArray *UUIDS = [NSMutableArray array];
+        for (CBMutableService *s in self.services) {
+            [UUIDS addObject:s.UUID];
+        }
+        
+        // 启动广播
+        if (self.advertisementData) {
+            [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey:UUIDS,
+                                                       CBAdvertisementDataLocalNameKey:self.localName,
+                                                       CBAdvertisementDataManufacturerDataKey:self.advertisementData}];
+        } else {
+            [self.peripheralManager startAdvertising: @{CBAdvertisementDataServiceUUIDsKey:UUIDS, CBAdvertisementDataLocalNameKey:self.localName}];
+        }
+        return;
+    } else {
+        
+        // 无法开启广播，可能是蓝牙未开，或者还没有接收到服务，3s后再次尝试，默认有5次机会开启广播
+        PERIPHERAL_MANAGER_INIT_WAIT_TIMES++;
+        if (PERIPHERAL_MANAGER_INIT_WAIT_TIMES > 5) {
+            DLog(@">>>error： 第%d次等待peripheralManager打开任然失败，请检查蓝牙设备是否可用", PERIPHERAL_MANAGER_INIT_WAIT_TIMES);
+        }
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self startAdvertising];
+        });
+        DLog(@">>> 第%d次等待peripheralManager打开", PERIPHERAL_MANAGER_INIT_WAIT_TIMES);
+    }
+
 }
 
 /*!
  *   @brief 停止广播
  */
 - (void)stopAdvertising {
-    
+    if (self.peripheralManager.isAdvertising) {
+        [self.peripheralManager stopAdvertising];
+    }
 }
 
 #pragma mark - CBPeripheralManagerDelegate

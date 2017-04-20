@@ -19,15 +19,15 @@
 #pragma mark - 属性
 @property (nonatomic, strong, readonly) HEBluetoothBridge *bridge;
 
-@property (nonatomic, strong) CBPeripheralManager *peripheralManager;   // 外设管理器
+@property (nonatomic, strong, readonly) CBPeripheralManager *peripheralManager;   // 外设管理器
 
-@property (nonatomic, copy) NSString *localName;                // 设备名称
+@property (nonatomic, copy, readonly) NSString *localName;                // 设备名称
 
-@property (nonatomic, strong) NSMutableArray *services;         // 设备服务
+@property (nonatomic, strong, readonly) NSArray *services;         // 设备服务
 
-@property (nonatomic, strong) NSData *manufacturerData;         // 设备广播包数据
+@property (nonatomic, strong, readonly) NSData *advertisementData;         // 设备广播包数据
 
-@property (nonatomic, assign) HEBluetoothState bluetoothState;  // 蓝牙状态
+@property (nonatomic, assign, readonly) HEBluetoothState bluetoothState;  // 蓝牙状态
 
 #pragma mark - Method
 
@@ -35,6 +35,11 @@
  *   @brief 添加一些服务，参数：数组
  */
 - (void)addServices:(NSArray *)services;
+
+/*!
+ *  @brief 删除某一个服务
+ */
+- (void)removeServices:(CBMutableService *)service;
 
 /*!
  *   @brief 删除所有的服务
@@ -47,10 +52,14 @@
 - (void)addManufacturerData:(NSData *)data;
 
 /*!
+ *  @brief 启动广播
+ */
+- (void)startAdvertising;
+
+/*!
  *   @brief 停止广播
  */
 - (void)stopAdvertising;
-
 
 @end
 
