@@ -21,11 +21,15 @@
     
     // 蓝牙状态
     HEBluetoothState bluetoothState;
+    
+    NSInteger scanTimeLength;       // 记录扫描时间
 }
 
 @property (nonatomic, strong) CBCentralManager *centralManager;         // 中心设备管理器
 
 @property (nonatomic, strong) NSTimer *connectTimer;                    // 连接设备计时器
+
+@property (nonatomic, strong) NSTimer *scanTimer;                       // 扫描设备计时器
 
 @end
 
@@ -97,15 +101,35 @@
  *   @brief 扫描Peripherals
  */
 - (void)scanPeripherals {
-    // serviceUUIDs用于扫描一个特点ID的外设 options用于设置一些扫描属性，查看：scanForPeripheralsWithServices ， scanForPeripheralsWithOptions
-    [self.centralManager scanForPeripheralsWithServices:self.bridge.options.scanForPeripheralsWithServices options:self.bridge.options.scanForPeripheralsWithOptions];
+    
+//    if (bluetoothState == HEBluetoothStatePoweredOn) {
+        // serviceUUIDs用于扫描一个特点ID的外设 options用于设置一些扫描属性，查看：scanForPeripheralsWithServices ， scanForPeripheralsWithOptions
+        [self.centralManager scanForPeripheralsWithServices:self.bridge.options.scanForPeripheralsWithServices options:self.bridge.options.scanForPeripheralsWithOptions];
+        scanTimeLength = 0;
+
+        self.scanTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(scanTimerRunning) userInfo:nil repeats:YES];
+    //    }
+    
+}
+    
+- (void)scanTimerRunning {
+    if (self.bridge.callback.blockOnDidScanPerippherals) {
+        BOOL stop = NULL;
+        self.bridge.callback.blockOnDidScanPerippherals(self.centralManager, ++scanTimeLength, &stop);
+        if (stop) {
+            [self cancelScan];
+        }
+    }
 }
 
 /*!
  *   @brief 连接Peripherals
  */
 - (void)connectToPeripheral:(CBPeripheral *)peripheral {
-    [self.centralManager connectPeripheral:peripheral options:self.bridge.options.connectPeripheralWithOptions];
+    
+    if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
+        [self.centralManager connectPeripheral:peripheral options:self.bridge.options.connectPeripheralWithOptions];
+    }
 }
 
 
@@ -113,7 +137,9 @@
  *   @brief 断开设备连接
  */
 - (void)cancelPeripheralConnection:(CBPeripheral *)peripheral {
-    [self.centralManager cancelPeripheralConnection:peripheral];
+    if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
+        [self.centralManager cancelPeripheralConnection:peripheral];
+    }
 }
 
 /*!
@@ -130,6 +156,13 @@
  */
 - (void)cancelScan {
     [self.centralManager stopScan];
+    
+    // 扫描计时结束
+    if ([self.scanTimer isValid]) {
+        [self.scanTimer invalidate];
+        self.scanTimer = nil;
+        scanTimeLength = 0;
+    }
     // block回调
     if(self.bridge.callback.blockOnCancelScan) {
         self.bridge.callback.blockOnCancelScan(self.centralManager);

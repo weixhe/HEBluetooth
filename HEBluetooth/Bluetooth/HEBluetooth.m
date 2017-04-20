@@ -68,6 +68,12 @@ static HEBluetooth *instance = nil;
 }
 
 /*!
+ *   @brief 开始扫描，包含了扫描时间和是否停止扫描
+ */
+- (void)setBlockOnScanPeripherals:(HECentralManagerDidScanPeripherals)block {
+    self.centralManager.bridge.callback.blockOnDidScanPerippherals = block;
+}
+/*!
  *   @brief 扫描的结果, peripheral:扫描到的外设, advertisementData:外设发送的广播数据, RSSI:信号强度
  */
 - (void)setBlockOnDiscoverToPeripherals:(HECentralDiscoverPeripheralsBlock)block {

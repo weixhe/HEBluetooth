@@ -15,6 +15,12 @@
 // 中心设备状态改变
 typedef void (^HECentralManagerDidUpdateStateBlock)(HEBluetoothState bluetoothState);
 
+// 中心设备开始扫描
+typedef void(^HECentralManagerDidScanPeripherals)(CBCentralManager *central, NSInteger timeInsterval, BOOL *stop);
+
+// 中心设备停止扫描回调
+typedef void(^HECentralCancelScanBlock)(CBCentralManager *centralManager);
+
 // 中心设备扫描到设备回调
 typedef void(^HECentralDiscoverPeripheralsBlock)(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI);
 
@@ -30,8 +36,7 @@ typedef void (^HECentralDisconnectPeripheralBlock)(CBCentralManager *central, CB
 // 中心设备所有连接设备 - 断开
 typedef void (^HECentralAllPeripheralsDisconnectionBlock)(CBCentralManager *centralManager);
 
-// 中心设备停止扫描回调
-typedef void(^HECentralCancelScanBlock)(CBCentralManager *centralManager);
+
 
 //====
 
@@ -81,6 +86,12 @@ typedef void (^HEPeripheralWriteValueForDescriptorsBlock)(CBPeripheral *peripher
 // 中心设备状态改变
 @property (nonatomic, copy) HECentralManagerDidUpdateStateBlock blockOnUpdateCentralState;
 
+// 开始扫描
+@property (nonatomic, copy) HECentralManagerDidScanPeripherals blockOnDidScanPerippherals;
+
+// 停止扫描回调
+@property (nonatomic, copy) HECentralCancelScanBlock blockOnCancelScan;
+
 // 中心设备扫描到设备回调
 @property (nonatomic, copy) HECentralDiscoverPeripheralsBlock blockOnDiscoverPeripheral;
 
@@ -96,8 +107,7 @@ typedef void (^HEPeripheralWriteValueForDescriptorsBlock)(CBPeripheral *peripher
 // 中心设备所有连接设备 - 断开
 @property (nonatomic, copy) HECentralAllPeripheralsDisconnectionBlock blockOnAllPeripheralDisconnectioned;
 
-// 停止扫描回调
-@property (nonatomic, copy) HECentralCancelScanBlock blockOnCancelScan;
+
 
 //====
 // 外设(设备)名字改变
@@ -138,4 +148,5 @@ typedef void (^HEPeripheralWriteValueForDescriptorsBlock)(CBPeripheral *peripher
 
 // 外设(设备)写入特征值的描述信息
 @property (nonatomic, copy) HEPeripheralWriteValueForDescriptorsBlock blockOnWriteValueForDescriptors;
+
 @end

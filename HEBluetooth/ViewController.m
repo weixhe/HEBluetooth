@@ -46,6 +46,15 @@
         NSLog(@"0000-中心设备状态修改");
     }];
     
+    [[HEBluetooth shareBluetooth] setBlockOnScanPeripherals:^(CBCentralManager *central, NSInteger timeInsterval, BOOL *stop) {
+        NSLog(@"%ld", timeInsterval);
+        
+        if (timeInsterval == 5) {
+            *stop = YES;
+        }
+    }];
+    
+    
     [[HEBluetooth shareBluetooth] setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {
         NSLog(@"1111-发现设备");
     }];
