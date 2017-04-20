@@ -79,8 +79,43 @@ typedef void (^HEPeripheralReadValueForDescriptorsBlock)(CBPeripheral *periphera
 // 外设(设备)写入特征值的描述信息
 typedef void (^HEPeripheralWriteValueForDescriptorsBlock)(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error);
 
+//=======
+// 外设(设备) 状态改变
+typedef void(^HEPeripheralDidUpdateState)(CBPeripheralManager *peripheral);
+
+// 外设(设备) 从后台恢复
+typedef void(^HEPeripheralWillRestoreState)(CBPeripheralManager *peripheral, NSDictionary<NSString *, id> *dict);
+
+// 外设（设备）开始广播
+typedef void(^HEPeripheralDidStartAdvertising)(CBPeripheralManager *peripheral, NSError *error);
+
+// 外设(设备) 添加服务
+typedef void(^HEPeripheralDidAddService)(CBPeripheralManager *peripheral, CBService *service, NSError *error);
+
+// 当一个central设备订阅一个特征值时调用
+typedef void(^HEPeripheralDidSubscribeToCharacteristic)(CBPeripheralManager *peripheral, CBCentral *central, CBCharacteristic *characteristic);
+
+// 取消订阅一个特征值时调用的方法
+typedef void(^HEPeripheralDidUnsubscribeToCharacteristic)(CBPeripheralManager *peripheral, CBCentral *central, CBCharacteristic *characteristic);
+
+// 收到读请求时触发的方法
+typedef void(^HEPeripheralDidReceiveReadRequest)(CBPeripheralManager *peripheral, CBATTRequest *request);
+
+// 收到写请求时触发的方法
+typedef void(^HEPeripheralDidReceiveWriteRequests)(CBPeripheralManager *peripheral, NSArray<CBATTRequest *> *requests);
+
+// 外设准备更新特征值时调用的方法
+typedef void(^HEPeripheralDidIsReadyToUpdateSubscribers)(CBPeripheralManager *peripheral);
+
+
 
 //================================================================================
+
+
+
+
+
+
 
 @interface HEBluetoothCallback : NSObject
 // 中心设备状态改变
@@ -148,5 +183,34 @@ typedef void (^HEPeripheralWriteValueForDescriptorsBlock)(CBPeripheral *peripher
 
 // 外设(设备)写入特征值的描述信息
 @property (nonatomic, copy) HEPeripheralWriteValueForDescriptorsBlock blockOnWriteValueForDescriptors;
+
+//====
+
+// 外设(设备) 添加服务
+@property (nonatomic, copy) HEPeripheralDidAddService blockOnDidAddService;
+
+// 外设(设备) 状态改变
+@property (nonatomic, copy) HEPeripheralDidUpdateState blockOnDidUpdateState;
+
+// 外设(设备) 从后台恢复
+@property (nonatomic, copy) HEPeripheralWillRestoreState blockOnWillRestoreState;
+
+// 外设（设备）开始广播
+@property (nonatomic, copy) HEPeripheralDidStartAdvertising blockOnDidStartAdvertising;
+
+// 当一个central设备订阅一个特征值时调用
+@property (nonatomic, copy) HEPeripheralDidSubscribeToCharacteristic blockOnDidSubscribeToCharacteristic;
+
+// 取消订阅一个特征值时调用的方法
+@property (nonatomic, copy) HEPeripheralDidUnsubscribeToCharacteristic blockOnDidUnsubscribeToCharacteristic;
+
+// 收到读请求时触发的方法
+@property (nonatomic, copy) HEPeripheralDidReceiveReadRequest blockOnDidReceiveReadRequest;
+
+// 收到写请求时触发的方法
+@property (nonatomic, copy) HEPeripheralDidReceiveWriteRequests blockOnDidReceiveWriteRequests;
+
+// 外设准备更新特征值时调用的方法
+@property (nonatomic, copy) HEPeripheralDidIsReadyToUpdateSubscribers blockOnIsReadyToUpdateSubscribers;
 
 @end

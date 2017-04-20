@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "HEBluetoothDefine.h"
+#import "HEBluetoothBridge.h"
 
 /*!
  *   @brief 外设管理中心，即将手机当做一个外设

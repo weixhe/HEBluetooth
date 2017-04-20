@@ -130,7 +130,6 @@
         });
         DLog(@">>> 第%d次等待peripheralManager打开", PERIPHERAL_MANAGER_INIT_WAIT_TIMES);
     }
-
 }
 
 /*!
@@ -211,6 +210,9 @@
     }
 #endif
 
+    if (self.bridge.callback.blockOnDidUpdateState) {
+        self.bridge.callback.blockOnDidUpdateState(peripheral);
+    }
 
 }
 
@@ -219,55 +221,78 @@
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral willRestoreState:(NSDictionary<NSString *, id> *)dict {
     
+    if (self.bridge.callback.blockOnWillRestoreState) {
+        self.bridge.callback.blockOnWillRestoreState(peripheral, dict);
+    }
 }
 
 /*!
  *   @brief 开始发送广播时调用的方法
  */
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(nullable NSError *)error {
-    
+    if (self.bridge.callback.blockOnDidStartAdvertising) {
+        self.bridge.callback.blockOnDidStartAdvertising(peripheral, error);
+    }
 }
 
 /*!
  *   @brief 添加服务调用的回调
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didAddService:(CBService *)service error:(nullable NSError *)error {
-    
+    if (error) {
+        DLog(@">>>添加服务失败 %@", error);
+    } else {
+        didAddServices++;
+    }
+    // block回调
+    if (self.bridge.callback.blockOnDidAddService) {
+        self.bridge.callback.blockOnDidAddService(peripheral, service, error);
+    }
 }
 
 /*!
  *   @brief 当一个central设备订阅一个特征值时调用的方法
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
-    
+    if (self.bridge.callback.blockOnDidSubscribeToCharacteristic) {
+        self.bridge.callback.blockOnDidSubscribeToCharacteristic(peripheral, central, characteristic);
+    }
 }
 
 /*!
  *   @brief 取消订阅一个特征值时调用的方法
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
-    
+    if (self.bridge.callback.blockOnDidUnsubscribeToCharacteristic) {
+        self.bridge.callback.blockOnDidUnsubscribeToCharacteristic(peripheral, central, characteristic);
+    }
 }
 
 /*!
  *   @brief 收到读请求时触发的方法
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didReceiveReadRequest:(CBATTRequest *)request {
-    
+    if (self.bridge.callback.blockOnDidReceiveReadRequest) {
+        self.bridge.callback.blockOnDidReceiveReadRequest(peripheral, request);
+    }
 }
 
 /*!
  *   @brief 收到写请求时触发的方法
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didReceiveWriteRequests:(NSArray<CBATTRequest *> *)requests {
-    
+    if (self.bridge.callback.blockOnDidReceiveWriteRequests) {
+        self.bridge.callback.blockOnDidReceiveWriteRequests(peripheral, requests);
+    }
 }
 
 /*!
  *   @brief 外设准备更新特征值时调用的方法
  */
 - (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral {
-    
+    if (self.bridge.callback.blockOnIsReadyToUpdateSubscribers) {
+        self.bridge.callback.blockOnIsReadyToUpdateSubscribers(peripheral);
+    }
 }
 
 
