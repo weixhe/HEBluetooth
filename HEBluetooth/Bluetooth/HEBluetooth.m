@@ -187,4 +187,47 @@ static HEBluetooth *instance = nil;
     self.centralManager.bridge.callback.blockOnWriteValueForDescriptors = block;
 }
 
+#pragma mark - CentalManager Tools
+/*!
+ *   @brief 开始扫描周围外设, 每5s尝试扫描一次，默认有5次机会（keyForCentalManagerWaitForOpenBluetooth）
+ */
+- (void)scanPeripherals {
+    // 需要判断蓝牙是否已经打开
+    if (self.centralManager.bluetoothState == HEBluetoothStatePoweredOn) {
+        [self.centralManager scanPeripherals];
+        
+    } else {
+        
+        // 蓝牙暂时没有打开，等待中......
+        
+        int waitForOpenBluetooth = 0;
+        
+        waitForOpenBluetooth++;
+        if (waitForOpenBluetooth >= keyForCentalManagerWaitForOpenBluetooth) {
+            DLog(@">>> 第 %d 次等待打开蓝牙任然失败，请检查你蓝牙使用权限或检查设备问题。", waitForOpenBluetooth);
+            return;
+        }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
+            [self scanPeripherals];
+        });
+        
+        DLog(@">>>第 %d 次等待打开蓝牙！！", waitForOpenBluetooth);
+    }
+}
+
+/*!
+ *   @brief 从外设的某个特征中读取详细内容
+ */
+- (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist {
+    
+    if (peripheral.state == CBPeripheralStateConnected) {
+        
+        self.centralManager.onlyReadOnceValueForDescriptors = YES;      // 仅获取一次特征描述值
+        [peripheral readValueForCharacteristic:charaterist];
+        [peripheral discoverDescriptorsForCharacteristic:charaterist];
+    } else {
+        DLog(@"外设 %@ 非连接状态", peripheral.name);
+    }
+}
+
 @end

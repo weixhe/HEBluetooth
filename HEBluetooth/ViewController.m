@@ -39,6 +39,7 @@
     
     // 1. 第一步：打开蓝牙后扫描周围设备
     [[HEBluetooth shareBluetooth].centralManager scanPeripherals];
+    
 }
 
 - (void)bluetoothDelegate {

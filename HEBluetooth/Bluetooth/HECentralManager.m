@@ -7,7 +7,6 @@
 //
 
 #import "HECentralManager.h"
-#import "HEBluetoothDefine.h"
 #import "HEBluetoothBridge.h"
 #import "HEBluetoothCallback.h"
 #import "HEBluetoothOptions.h"
@@ -18,9 +17,6 @@
     NSMutableArray *connectedPeripherals;       // 已经连接的设备、外设
     NSMutableArray *discoverPeripherals;        // 已经连接的设备、外设
     NSMutableArray *autoReconnectPeripherals;   // 需要自动重连的设备、外设
-    
-    // 蓝牙状态
-    HEBluetoothState bluetoothState;
     
     NSInteger scanTimeLength;       // 记录扫描时间
 }
@@ -261,27 +257,27 @@
 #else
         switch (central.state) {
             case CBCentralManagerStateUnknown:
-                bluetoothState = HEBluetoothStateUnknown;
+                _bluetoothState = HEBluetoothStateUnknown;
                 DLog(@">>>中心设备-状态未知");
                 break;
             case CBCentralManagerStateResetting:
-                bluetoothState = HEBluetoothStateResetting;
+                _bluetoothState = HEBluetoothStateResetting;
                 DLog(@">>>中心设备-连接断开 即将重置");
                 break;
             case CBCentralManagerStateUnsupported:
-                bluetoothState = HEBluetoothStateUnsupported;
+                _bluetoothState = HEBluetoothStateUnsupported;
                 DLog(@">>>中心设备-该平台不支持蓝牙");
                 break;
             case CBCentralManagerStateUnauthorized:
-                bluetoothState = HEBluetoothStateUnauthorized;
+                _bluetoothState = HEBluetoothStateUnauthorized;
                 DLog(@">>>中心设备-未授权蓝牙使用");
                 break;
             case CBCentralManagerStatePoweredOff:
-                bluetoothState = HEBluetoothStatePoweredOff;
+                _bluetoothState = HEBluetoothStatePoweredOff;
                 DLog(@">>>中心设备-蓝牙关闭");
                 break;
             case CBCentralManagerStatePoweredOn:
-                bluetoothState = HEBluetoothStatePoweredOn;
+                _bluetoothState = HEBluetoothStatePoweredOn;
                 DLog(@">>>中心设备-蓝牙正常开启");
                 break;
             default:
@@ -291,7 +287,7 @@
     
     // 状态改变callback
     if (self.bridge.callback.blockOnUpdateCentralState) {
-        self.bridge.callback.blockOnUpdateCentralState(bluetoothState);
+        self.bridge.callback.blockOnUpdateCentralState(_bluetoothState);
     }
 
 }

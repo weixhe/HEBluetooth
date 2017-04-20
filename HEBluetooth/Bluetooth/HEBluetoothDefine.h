@@ -22,9 +22,6 @@
     #define DLog(...)
 #endif
 
-#define keyForCentalRestoreIdentify                         @"com.weixhe.hebluetooth.centalManager.restoreIdentify"
-
-
 /// 当前系统版本大于等于某版本
 #define IOS_Equal_or_Above(v) (([[[UIDevice currentDevice] systemVersion] floatValue] >= (v))? (YES):(NO))
 /// 当前系统版本小于等于某版本
@@ -35,6 +32,15 @@
 #define isIOS8  ([[[UIDevice currentDevice] systemVersion] intValue] == 8 ? (YES):(NO))
 #define isIOS9  ([[[UIDevice currentDevice] systemVersion] intValue] == 9 ? (YES):(NO))
 #define isIOS10 ([[[UIDevice currentDevice] systemVersion] intValue] == 10 ? (YES):(NO))
+
+
+
+// CBCentralManager等待设备打开次数
+#define keyForCentalManagerWaitForOpenBluetooth             5
+
+// 后台恢复centralManager的唯一标识
+#define keyForCentalRestoreIdentify                         @"com.weixhe.hebluetooth.centalManager.restoreIdentify"
+
 
 /*!
  *   @brief 蓝牙状态

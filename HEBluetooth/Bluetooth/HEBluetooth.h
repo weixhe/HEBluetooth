@@ -133,5 +133,14 @@
  */
 - (void)setBlockOnDidWriteValueForDescriptor:(HEPeripheralWriteValueForDescriptorsBlock)block;
 
+#pragma mark - CentalManager Tools
+/*!
+ *   @brief 开始扫描周围外设, 每5s尝试扫描一次，默认有5次机会 @see keyForCentalManagerWaitForOpenBluetooth
+ */
+- (void)scanPeripherals;
 
+/*!
+ *   @brief 从外设的某个特征中读取详细内容
+ */
+- (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist;
 @end

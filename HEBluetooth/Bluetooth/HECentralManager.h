@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+#import "HEBluetoothDefine.h"
 
 /*!
  *   @brief 中心设备管理中心，蓝牙连接时，必须有一个设备充当中心设备，扫描。连接其他的设备（外设），关系：一个中心设备 -> 一个或多个外设 -> 一个或多个服务 -> 一个或多个特征 -> 一个或多个特征描述
@@ -27,7 +28,7 @@
 
 //@property (nonatomic, assign) BOOL autoReconnectPeripheral;           // 是否自动重新连接已断开的外设
 
-@property (nonatomic, assign) BOOL autoDiscoverCharacteristics;         // 是否自动查找服务中的特征、特性
+@property (nonatomic, assign) BOOL autoDiscoverCharacteristics;      // 是否自动查找服务中的特征、特性
 
 @property (nonatomic, assign) BOOL autoReadValueForCharacteristic;      // 是否获取（更新）Characteristics的值
 
@@ -35,6 +36,9 @@
 
 @property (nonatomic, assign) BOOL autoReadValueForDescriptors;         // 是否需要获取（更新）特征值的描述值
 @property (nonatomic, assign) BOOL onlyReadOnceValueForDescriptors;     // 只读取一次特征的描述值，与 autoReadValueForDescriptors 其一
+
+// 蓝牙状态
+@property (nonatomic, assign) HEBluetoothState bluetoothState;
 
 #pragma mark - Method
 /*!
