@@ -40,7 +40,7 @@
     if (self) {
         
         [self centralManager];
-       _bridge = [[HEBluetoothBridge alloc] init];
+        _bridge = [[HEBluetoothBridge alloc] init];
         connectedPeripherals = [NSMutableArray array];
         discoverPeripherals = [NSMutableArray array];
         autoReconnectPeripherals = [NSMutableArray array];
@@ -273,6 +273,40 @@
     }
 }
 
+#pragma mark - 历史记录
+- (void)saveToHistoryConnectioned:(CBPeripheral *)peripheral {
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[self getFromHistoryConnectioned]];
+    // 暂时使用唯一标示：名字+UUID
+    NSString *identify = [NSString stringWithFormat:@"%@:%@", peripheral.name, peripheral.identifier.UUIDString];
+    if (!array) {
+        array = [NSMutableArray arrayWithObjects:identify, nil];
+    } else if (![array containsObject:identify]) {
+        [array addObject:identify];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray:array] forKey:@"com.weixhe.hebluetooth.historyConnectPeripherals"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSArray *)getFromHistoryConnectioned {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"com.weixhe.hebluetooth.historyConnectPeripherals"];
+}
+
+- (BOOL)isContainedInHistory:(CBPeripheral *)peripheral {
+    NSArray *history = [self getFromHistoryConnectioned];
+    NSString *identify = [NSString stringWithFormat:@"%@:%@", peripheral.name, peripheral.identifier.UUIDString];
+    return [history containsObject:identify];
+}
+
+- (void)ignorePeripheralFromHistory:(CBPeripheral *)peripheral {
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[self getFromHistoryConnectioned]];
+    NSString *identify = [NSString stringWithFormat:@"%@:%@", peripheral.name, peripheral.identifier.UUIDString];
+    if ([array containsObject:identify]) {
+        [array removeObject:identify];
+        [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"com.weixhe.hebluetooth.historyConnectPeripherals"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_10_0
 - (void)changeBluetoothState:(CBManagerState)state {
     switch (state) {
@@ -369,7 +403,7 @@
  *   @brief 扫描的结果, peripheral:扫描到的外设, advertisementData:外设发送的广播数据, RSSI:信号强度
  */
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
-//    DLog(@"扫描到设备： %@", peripheral.name);
+
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         
         if ([self addDiscoverdPeripheral:peripheral]) {     // 此处的方法只走一次
@@ -380,7 +414,10 @@
             }
             
             // 是否自动连接外设
-            if (self.autoConnectPeripheral) {
+            if ([self isContainedInHistory:peripheral]) {
+                [self connectToPeripheral:peripheral];
+                
+            } else if (self.autoConnectPeripheral) {
                 [self connectToPeripheral:peripheral];
             }
         }
@@ -392,8 +429,6 @@
  */
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     
-    DLog(@">>>连接到名称为（%@）的设备-成功", peripheral.name);
-    
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         
         if ([self.connectTimer isValid]) {
@@ -403,6 +438,10 @@
         
         // 保存已连接的设备
         [self addConnectPeripheral:peripheral];
+        
+        // 保存历史记录
+        [self saveToHistoryConnectioned:peripheral];
+        
         peripheral.delegate = self;
         
         // block回调
@@ -421,7 +460,7 @@
  *   @brief 连接到Peripherals-失败
  */
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(nullable NSError *)error {
-    DLog(@">>>连接到名称为（%@）的设备-失败", peripheral.name);
+
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         // block回调
         if (self.bridge.callback.blockOnFailConnectPeripheral) {
@@ -434,7 +473,7 @@
  *   @brief 断开与外设的连接
  */
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(nullable NSError *)error {
-    DLog(@">>>外设连接断开连接 %@: %@\n", [peripheral name], [error localizedDescription]);
+
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         // block回调
         if (self.bridge.callback.blockOnDisConnectPeripheral) {
@@ -463,7 +502,7 @@
  *   @brief 外设名称更改时回调的方法
  */
 - (void)peripheralDidUpdateName:(CBPeripheral *)peripheral NS_AVAILABLE(NA, 6_0) {
-    DLog(@">>>外设更新了名字： %@\n", peripheral.name);
+
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         
         // block回调
@@ -477,7 +516,7 @@
  *   @brief 外设服务变化时回调的方法
  */
 - (void)peripheral:(CBPeripheral *)peripheral didModifyServices:(NSArray<CBService *> *)invalidatedServices NS_AVAILABLE(NA, 7_0) {
-    DLog(@">>>外设修改了服务： %@\n 修改之前的服务： %@", peripheral.services, invalidatedServices);
+
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         
         // block回调
@@ -493,7 +532,7 @@
 
 #if  __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0
 - (void)peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(nullable NSError *)error NS_DEPRECATED(NA, NA, 5_0, 8_0) {
-    DLog(@">>>外设更新取信号强度RSSI： %@\n", peripheral.RSSI);
+
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         
         // block回调
@@ -505,7 +544,7 @@
 
 #else
 - (void)peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(nullable NSError *)error NS_AVAILABLE(NA, 8_0) {
-    DLog(@">>>外设读取信号强度RSSI： %@\n", RSSI);
+
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         
         // block回调
@@ -523,8 +562,6 @@
     
     if (error) {
         DLog(@">>>外设发现了服务出错： %@\n", error);
-    } else {
-        DLog(@">>>外设发现了服务: %@\n", peripheral.services);
     }
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
@@ -557,8 +594,6 @@
 
     if (error) {
         DLog(@">>>外设在服务中发现子服务出错： %@\n", error);
-    } else {
-        DLog(@">>>外设在服务中发现子服务: %@\n", service);
     }
 
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
@@ -576,9 +611,8 @@
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(nullable NSError *)error {
     if (error) {
         DLog(@">>>外设发现服务的特征值出错： %@\n", error);
-    } else {
-        DLog(@">>>外设发现服务的特征值: %@\n", service.characteristics);
     }
+    
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         // block回调
         if (self.bridge.callback.blockOnDiscoverCharacteristics) {
@@ -591,7 +625,7 @@
                // [peripheral readValueForCharacteristic:characteristic];
               // 判断读写权限
               if (characteristic.properties & CBCharacteristicPropertyRead) {
-                  DLog(@">>>外设服务中的特种读写权限-读");
+
                   [peripheral readValueForCharacteristic:characteristic];       // 从一个特征中读取数据
               }
             }
@@ -612,8 +646,6 @@
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
     if (error) {
         DLog(@">>>外设特征值读取（更新）出错： %@\n", error);
-    } else {
-        DLog(@">>>外设特征值读取（更新）: %@\n", characteristic);
     }
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
@@ -632,8 +664,6 @@
     
     if (error) {
         DLog(@">>>外设向特征值写数据出错： %@\n", error);
-    } else {
-        DLog(@">>>外设向特征值写数据: %@\n", characteristic);
     }
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
@@ -651,8 +681,6 @@
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
     if (error) {
         DLog(@">>>外设特征值的通知设置改变出错： %@\n", error);
-    } else {
-        DLog(@">>>外设特征值的通知设置改变: %@\n", characteristic.isNotifying ? @"isNotifying" : @"noNotifying");
     }
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
@@ -670,8 +698,6 @@
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
     if (error) {
         DLog(@">>>外设发现特征值的描述信息出错： %@\n", error);
-    } else {
-        DLog(@">>>外设发现特征值的描述信息: %@\n", characteristic.descriptors);
     }
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
@@ -704,8 +730,6 @@
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForDescriptor:(CBDescriptor *)descriptor error:(nullable NSError *)error {
     if (error) {
         DLog(@">>>外设特征的描述值更新出错： %@\n", error);
-    } else {
-        DLog(@">>>外设特征的描述值更新: %@\n", descriptor);
     }
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
@@ -723,8 +747,6 @@
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForDescriptor:(CBDescriptor *)descriptor error:(nullable NSError *)error {
     if (error) {
         DLog(@">>>外设写描述信息出错： %@\n", error);
-    } else {
-        DLog(@">>>外设写描述信息: %@\n", descriptor);
     }
     
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {

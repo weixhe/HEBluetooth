@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-@interface HEConnectPeripheralViewController : UIViewController
+@interface HEConnectPeripheralViewController : UITableViewController
 
 @property (nonatomic, strong) CBPeripheral *peripheral;
+
 
 @end

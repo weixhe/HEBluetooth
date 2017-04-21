@@ -241,9 +241,9 @@ static HEBluetooth *instance = nil;
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
         self.centralManager.autoDiscoverCharacteristics = YES;          // 连接成功有直接发现特征值
-        self.centralManager.autoReadValueForCharacteristic = YES;       // 读取特征值
-        self.centralManager.autoDiscoverDescriptors = YES;              // 连接成功后自动发现描述值
-        self.centralManager.autoReadValueForDescriptors = YES;          // 读取描述值
+//        self.centralManager.autoReadValueForCharacteristic = YES;       // 读取特征值
+//        self.centralManager.autoDiscoverDescriptors = YES;              // 连接成功后自动发现描述值
+//        self.centralManager.autoReadValueForDescriptors = YES;          // 读取描述值
         [self.centralManager connectToPeripheral:peripheral];
     }
 }

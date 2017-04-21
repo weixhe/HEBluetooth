@@ -80,9 +80,13 @@
     
     [[HEBluetooth shareBluetooth] setBlockOnConnected:^(CBCentralManager *central, CBPeripheral *peripheral) {
         NSLog(@"2222-连接设备");
-        HEConnectPeripheralViewController *vc = [[HEConnectPeripheralViewController alloc] init];
-        vc.peripheral = peripheral;
-        [self.navigationController pushViewController:vc animated:YES];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            HEConnectPeripheralViewController *vc = [[HEConnectPeripheralViewController alloc] init];
+            vc.peripheral = peripheral;
+            [weakSelf.navigationController pushViewController:vc animated:YES];
+        });
     }];
     
     [[HEBluetooth shareBluetooth] setBlockOnFailToConnect:^(CBCentralManager *central, CBPeripheral *peripheral, NSError *error) {
