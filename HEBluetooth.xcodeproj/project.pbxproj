@@ -23,6 +23,7 @@
 		4557F7A61EA5BB4E006005B3 /* HEBluetoothUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4557F7A51EA5BB4E006005B3 /* HEBluetoothUITests.m */; };
 		4557F7B81EA5F644006005B3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4557F7B71EA5F644006005B3 /* CoreBluetooth.framework */; };
 		456304B51EA8B49800038FBF /* HEPeripheralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 456304B41EA8B49800038FBF /* HEPeripheralManager.m */; };
+		459710D21EA9AF6E001C07C7 /* HEConnectPeripheralViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 459710D11EA9AF6E001C07C7 /* HEConnectPeripheralViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,8 @@
 		4557F7B71EA5F644006005B3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		456304B31EA8B49800038FBF /* HEPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEPeripheralManager.h; sourceTree = "<group>"; };
 		456304B41EA8B49800038FBF /* HEPeripheralManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEPeripheralManager.m; sourceTree = "<group>"; };
+		459710D01EA9AF6E001C07C7 /* HEConnectPeripheralViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HEConnectPeripheralViewController.h; sourceTree = "<group>"; };
+		459710D11EA9AF6E001C07C7 /* HEConnectPeripheralViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HEConnectPeripheralViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +156,8 @@
 				4557F7841EA5BB4E006005B3 /* AppDelegate.m */,
 				4557F7861EA5BB4E006005B3 /* ViewController.h */,
 				4557F7871EA5BB4E006005B3 /* ViewController.m */,
+				459710D01EA9AF6E001C07C7 /* HEConnectPeripheralViewController.h */,
+				459710D11EA9AF6E001C07C7 /* HEConnectPeripheralViewController.m */,
 				4557F7891EA5BB4E006005B3 /* Main.storyboard */,
 				048BDDA81EA649CC0098CB9D /* Bluetooth */,
 				4557F78C1EA5BB4E006005B3 /* Assets.xcassets */,
@@ -333,6 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				450A56FF1EA6FB230021BF4F /* HEBluetoothCallback.m in Sources */,
+				459710D21EA9AF6E001C07C7 /* HEConnectPeripheralViewController.m in Sources */,
 				048BDDAF1EA64E330098CB9D /* HEBluetooth.m in Sources */,
 				4557F7881EA5BB4E006005B3 /* ViewController.m in Sources */,
 				048BDDB21EA6510F0098CB9D /* HEBluetoothUtility.m in Sources */,

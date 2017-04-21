@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "HEBluetoothDefine.h"
+#import "HEConnectPeripheralViewController.h"
 
 #import "HEBluetooth.h"
 
@@ -79,6 +80,9 @@
     
     [[HEBluetooth shareBluetooth] setBlockOnConnected:^(CBCentralManager *central, CBPeripheral *peripheral) {
         NSLog(@"2222-连接设备");
+        HEConnectPeripheralViewController *vc = [[HEConnectPeripheralViewController alloc] init];
+        vc.peripheral = peripheral;
+        [self.navigationController pushViewController:vc animated:YES];
     }];
     
     [[HEBluetooth shareBluetooth] setBlockOnFailToConnect:^(CBCentralManager *central, CBPeripheral *peripheral, NSError *error) {
@@ -88,57 +92,6 @@
     [[HEBluetooth shareBluetooth] setBlockOnDisconnect:^(CBCentralManager *central, CBPeripheral *peripheral, NSError *error) {
         NSLog(@"4444-连接设备断开");
     }];
-    
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDiscoverServices:^(CBPeripheral *peripheral, NSError *error) {
-        NSLog(@"5555-发现设备的服务");
-    }];
-    
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDidDiscoverIncludedServicesForService:^(CBService *service, NSError *error) {
-        NSLog(@"121212-发现服务中的自服务");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDiscoverCharacteristics:^(CBPeripheral *peripheral, CBService *service, NSError *error) {
-        NSLog(@"161616-发现设备的特征");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnReadValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"6666-阅读特征");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDidWriteValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"7777-写入特征");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDiscoverDescriptorsForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"8888-发现设备特征的描述");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnReadValueForDescriptors:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
-        NSLog(@"9999-阅读特征的描述");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDidWriteValueForDescriptor:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
-        NSLog(@"101010-写入特征描述");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDidUpdateNotificationStateForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"111111-更新特征通知");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDidReadRSSI:^(NSNumber *RSSI, NSError *error) {
-        NSLog(@"131313-信号强度阅读、更新");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDidUpdateName:^(CBPeripheral *peripheral) {
-        NSLog(@"141414-设备名称改变");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnDidModifyServices:^(CBPeripheral *peripheral, NSArray *invalidatedServices) {
-        NSLog(@"151515-外设服务变化");
-    }];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -174,6 +127,10 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -220,6 +177,12 @@
     
     [[HEBluetooth shareBluetooth] cancelScan];
     
+    NSDictionary *item = [peripheralDataArray objectAtIndex:indexPath.row];
+    CBPeripheral *peripheral = [item objectForKey:@"peripheral"];
+//    NSDictionary *advertisementData = [item objectForKey:@"advertisementData"];
+//    NSNumber *RSSI = [item objectForKey:@"RSSI"];
+ 
+    [[HEBluetooth shareBluetooth] connectPeripheral:peripheral];
 }
 
 @end

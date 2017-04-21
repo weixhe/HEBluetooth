@@ -28,17 +28,16 @@
 
 //@property (nonatomic, assign) BOOL autoReconnectPeripheral;           // 是否自动重新连接已断开的外设
 
-@property (nonatomic, assign) BOOL autoDiscoverCharacteristics;      // 是否自动查找服务中的特征、特性
-
+@property (nonatomic, assign) BOOL autoDiscoverCharacteristics;         // 是否自动查找服务中的特征、特性
 @property (nonatomic, assign) BOOL autoReadValueForCharacteristic;      // 是否获取（更新）Characteristics的值
 
 @property (nonatomic, assign) BOOL autoDiscoverDescriptors;             // 是否需要寻找特征的描述值
-
 @property (nonatomic, assign) BOOL autoReadValueForDescriptors;         // 是否需要获取（更新）特征值的描述值
 @property (nonatomic, assign) BOOL onlyReadOnceValueForDescriptors;     // 只读取一次特征的描述值，与 autoReadValueForDescriptors 其一
 
 // 蓝牙状态
-@property (nonatomic, assign) HEBluetoothState bluetoothState;
+@property (nonatomic, assign, readonly) HEBluetoothState bluetoothState;
+
 
 #pragma mark - Method
 /*!

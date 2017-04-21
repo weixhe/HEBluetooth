@@ -234,10 +234,16 @@ static HEBluetooth *instance = nil;
     [self.centralManager cancelScan];
 }
 
-- (void)connectPeripheral:(CBPeripheral *)peripheral autoReadCharacteristic:(BOOL)autoReadCharacteristic {
+/*!
+ *   @brief 连接扫描的某一个设备
+ */
+- (void)connectPeripheral:(CBPeripheral *)peripheral {
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
-        self.centralManager.autoReadValueForCharacteristic = YES;       // 连接成功有直接读取特征值
+        self.centralManager.autoDiscoverCharacteristics = YES;          // 连接成功有直接发现特征值
+        self.centralManager.autoReadValueForCharacteristic = YES;       // 读取特征值
+        self.centralManager.autoDiscoverDescriptors = YES;              // 连接成功后自动发现描述值
+        self.centralManager.autoReadValueForDescriptors = YES;          // 读取描述值
         [self.centralManager connectToPeripheral:peripheral];
     }
 }

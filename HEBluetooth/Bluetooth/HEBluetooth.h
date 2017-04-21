@@ -149,6 +149,11 @@
 - (void)cancelScan;
 
 /*!
+ *   @brief 连接扫描的某一个设备
+ */
+- (void)connectPeripheral:(CBPeripheral *)peripheral;
+
+/*!
  *   @brief 从外设的某个特征中读取详细内容
  */
 - (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist;

@@ -336,7 +336,6 @@
         default:
             break;
     }
-
 }
 #endif
 
@@ -354,7 +353,6 @@
     if (self.bridge.callback.blockOnUpdateCentralState) {
         self.bridge.callback.blockOnUpdateCentralState(_bluetoothState);
     }
-
 }
 
 /*!
