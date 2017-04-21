@@ -19,6 +19,7 @@
     NSMutableArray *autoReconnectPeripherals;   // 需要自动重连的设备、外设
     
     NSInteger scanTimeLength;       // 记录扫描时间
+    NSInteger tryToScanTimes;       // 尝试连接的次数
 }
 
 @property (nonatomic, strong) CBCentralManager *centralManager;         // 中心设备管理器
@@ -37,6 +38,8 @@
 {
     self = [super init];
     if (self) {
+        
+        [self centralManager];
        _bridge = [[HEBluetoothBridge alloc] init];
         connectedPeripherals = [NSMutableArray array];
         discoverPeripherals = [NSMutableArray array];
@@ -61,6 +64,7 @@
             // 非后台模式
             _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
         }
+        [self changeBluetoothState:_centralManager.state];
     }
     return _centralManager;
 }
@@ -96,14 +100,28 @@
 /*!
  *   @brief 扫描Peripherals
  */
+
 - (void)scanPeripherals {
     
     if (self.bluetoothState == HEBluetoothStatePoweredOn) {
+        tryToScanTimes = 0;
         // serviceUUIDs用于扫描一个特点ID的外设 options用于设置一些扫描属性，查看：scanForPeripheralsWithServices ， scanForPeripheralsWithOptions
         [self.centralManager scanForPeripheralsWithServices:self.bridge.options.scanForPeripheralsWithServices options:self.bridge.options.scanForPeripheralsWithOptions];
         scanTimeLength = 0;
+        [self removeAllDiscoverdPeripheral];
 
         self.scanTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(scanTimerRunning) userInfo:nil repeats:YES];
+    } else {
+        tryToScanTimes++;
+        if (tryToScanTimes > keyForCentalManagerWaitForOpenBluetooth) {
+            DLog(@">>>第 %ld 次等待打开蓝牙任然失败，请检查你蓝牙使用权限或检查设备问题。", tryToScanTimes);
+            tryToScanTimes = 0;
+            return;
+        }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self scanPeripherals];
+        });
+        DLog(@">>>蓝牙状态未开启(%ld)", tryToScanTimes);
     }
 }
 
@@ -167,22 +185,57 @@
  *   @brief 停止扫描
  */
 - (void)cancelScan {
-    [self.centralManager stopScan];
-    
-    // 扫描计时结束
-    if ([self.scanTimer isValid]) {
-        [self.scanTimer invalidate];
-        self.scanTimer = nil;
-        scanTimeLength = 0;
-    }
-    
-    // block回调
-    if(self.bridge.callback.blockOnCancelScan) {
-        self.bridge.callback.blockOnCancelScan(self.centralManager);
+    if (self.centralManager.isScanning) {
+        
+        [self.centralManager stopScan];
+        
+        // 扫描计时结束
+        if ([self.scanTimer isValid]) {
+            [self.scanTimer invalidate];
+            self.scanTimer = nil;
+            scanTimeLength = 0;
+        }
+        
+        // block回调
+        if(self.bridge.callback.blockOnCancelScan) {
+            self.bridge.callback.blockOnCancelScan(self.centralManager);
+        }
     }
 }
 
+/*!
+ *   @brief 返回所有搜索到的、已连接的、需要自动连接的设备
+ */
+- (NSArray *)findAllDiscoverPeripherals {
+    return discoverPeripherals;
+}
+- (NSArray *)findAllConnectedPeripheral {
+    return connectedPeripherals;
+}
+- (NSArray *)findAutoConnectPeripheral {
+    return autoReconnectPeripherals;
+}
 #pragma mark - Privite Method
+
+/*!
+ *   @brief 添加扫描到的设备
+ */
+- (BOOL)addDiscoverdPeripheral:(CBPeripheral *)peripheral {
+    
+    if (![discoverPeripherals containsObject:peripheral]) {
+        [discoverPeripherals addObject:peripheral];
+        return YES;
+    }
+    return NO;
+}
+
+/*!
+ *   @brief 删除扫描到的设备
+ */
+- (void)removeAllDiscoverdPeripheral {
+    [discoverPeripherals removeAllObjects];
+}
+
 /*!
  *   @brief 添加保存已连接的设备
  */
@@ -195,18 +248,12 @@
 /*!
  *   @brief 删除已断开连接的设备
  */
-- (void)deleteConnectPeripheral:(CBPeripheral *)peripheral {
+- (void)removeConnectPeripheral:(CBPeripheral *)peripheral {
     if ([connectedPeripherals containsObject:peripheral]) {
         [connectedPeripherals removeObject:peripheral];
     }
 }
 
-/*!
- *   @brief 查找所有的已连接的设备
- */
-- (NSArray *)findAllConnectedPeripheral {
-    return connectedPeripherals;
-}
 
 /*!
  *   @brief 添加需要自动连接的设备
@@ -220,18 +267,78 @@
 /*!
  *   @brief 删除需要自动连接的设备
  */
-- (void)deleteAutoConnectPeripheral:(CBPeripheral *)peripheral {
+- (void)removeAutoConnectPeripheral:(CBPeripheral *)peripheral {
     if ([autoReconnectPeripherals containsObject:peripheral]) {
         [autoReconnectPeripherals removeObject:peripheral];
     }
 }
 
-/*!
- *   @brief 查找所有需要自动连接的设备
- */
-- (NSArray *)findAutoConnectPeripheral {
-    return autoReconnectPeripherals;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_10_0
+- (void)changeBluetoothState:(CBManagerState)state {
+    switch (state) {
+        case CBManagerStateUnknown:
+            _bluetoothState = HEBluetoothStateUnknown;
+            DLog(@">>>中心设备-状态未知");
+            break;
+        case CBManagerStateResetting:
+            _bluetoothState = HEBluetoothStateResetting;
+            DLog(@">>>中心设备-连接断开 即将重置");
+            break;
+        case CBManagerStateUnsupported:
+            _bluetoothState = HEBluetoothStateUnsupported;
+            DLog(@">>>中心设备-该平台不支持蓝牙");
+            break;
+        case CBManagerStateUnauthorized:
+            _bluetoothState = HEBluetoothStateUnauthorized;
+            DLog(@">>>中心设备-未授权蓝牙使用");
+            break;
+        case CBManagerStatePoweredOff:
+            _bluetoothState = HEBluetoothStatePoweredOff;
+            DLog(@">>>中心设备-蓝牙关闭");
+            break;
+        case CBManagerStatePoweredOn:
+            _bluetoothState = HEBluetoothStatePoweredOn;
+            DLog(@">>>中心设备-蓝牙正常开启");
+            
+            break;
+        default:
+            break;
+    }
+
 }
+#else
+- (void)changeBluetoothState:(CBCentralManagerState)state {
+    switch (state) {
+        case CBCentralManagerStateUnknown:
+            _bluetoothState = HEBluetoothStateUnknown;
+            DLog(@">>>中心设备-状态未知");
+            break;
+        case CBCentralManagerStateResetting:
+            _bluetoothState = HEBluetoothStateResetting;
+            DLog(@">>>中心设备-连接断开 即将重置");
+            break;
+        case CBCentralManagerStateUnsupported:
+            _bluetoothState = HEBluetoothStateUnsupported;
+            DLog(@">>>中心设备-该平台不支持蓝牙");
+            break;
+        case CBCentralManagerStateUnauthorized:
+            _bluetoothState = HEBluetoothStateUnauthorized;
+            DLog(@">>>中心设备-未授权蓝牙使用");
+            break;
+        case CBCentralManagerStatePoweredOff:
+            _bluetoothState = HEBluetoothStatePoweredOff;
+            DLog(@">>>中心设备-蓝牙关闭");
+            break;
+        case CBCentralManagerStatePoweredOn:
+            _bluetoothState = HEBluetoothStatePoweredOn;
+            DLog(@">>>中心设备-蓝牙正常开启");
+            break;
+        default:
+            break;
+    }
+
+}
+#endif
 
 #pragma mark - CBCentralManagerDelegate
 /*!
@@ -240,67 +347,8 @@
  */
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
-
-        switch (central.state) {
-            case CBManagerStateUnknown:
-                _bluetoothState = HEBluetoothStateUnknown;
-                DLog(@">>>中心设备-状态未知");
-                break;
-            case CBManagerStateResetting:
-                _bluetoothState = HEBluetoothStateResetting;
-                DLog(@">>>中心设备-连接断开 即将重置");
-                break;
-            case CBManagerStateUnsupported:
-                _bluetoothState = HEBluetoothStateUnsupported;
-                DLog(@">>>中心设备-该平台不支持蓝牙");
-                break;
-            case CBManagerStateUnauthorized:
-                _bluetoothState = HEBluetoothStateUnauthorized;
-                DLog(@">>>中心设备-未授权蓝牙使用");
-                break;
-            case CBManagerStatePoweredOff:
-                _bluetoothState = HEBluetoothStatePoweredOff;
-                DLog(@">>>中心设备-蓝牙关闭");
-                break;
-            case CBManagerStatePoweredOn:
-                _bluetoothState = HEBluetoothStatePoweredOn;
-                DLog(@">>>中心设备-蓝牙正常开启");
-                
-                break;
-            default:
-                break;
-        }
-#else
-        switch (central.state) {
-            case CBCentralManagerStateUnknown:
-                _bluetoothState = HEBluetoothStateUnknown;
-                DLog(@">>>中心设备-状态未知");
-                break;
-            case CBCentralManagerStateResetting:
-                _bluetoothState = HEBluetoothStateResetting;
-                DLog(@">>>中心设备-连接断开 即将重置");
-                break;
-            case CBCentralManagerStateUnsupported:
-                _bluetoothState = HEBluetoothStateUnsupported;
-                DLog(@">>>中心设备-该平台不支持蓝牙");
-                break;
-            case CBCentralManagerStateUnauthorized:
-                _bluetoothState = HEBluetoothStateUnauthorized;
-                DLog(@">>>中心设备-未授权蓝牙使用");
-                break;
-            case CBCentralManagerStatePoweredOff:
-                _bluetoothState = HEBluetoothStatePoweredOff;
-                DLog(@">>>中心设备-蓝牙关闭");
-                break;
-            case CBCentralManagerStatePoweredOn:
-                _bluetoothState = HEBluetoothStatePoweredOn;
-                DLog(@">>>中心设备-蓝牙正常开启");
-                break;
-            default:
-                break;
-        }
-#endif
+    // 保存状态
+    [self changeBluetoothState:central.state];
     
     // 状态改变callback
     if (self.bridge.callback.blockOnUpdateCentralState) {
@@ -323,17 +371,20 @@
  *   @brief 扫描的结果, peripheral:扫描到的外设, advertisementData:外设发送的广播数据, RSSI:信号强度
  */
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
-    DLog(@"扫描到设备： %@", peripheral.name);
+//    DLog(@"扫描到设备： %@", peripheral.name);
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
         
-        // block回调
-        if (self.bridge.callback.blockOnDiscoverPeripheral) {
-            self.bridge.callback.blockOnDiscoverPeripheral(self.centralManager, peripheral, advertisementData, RSSI);
-        }
-        
-        // 是否自动连接外设
-        if (self.autoConnectPeripheral) {
-            [self connectToPeripheral:peripheral];
+        if ([self addDiscoverdPeripheral:peripheral]) {     // 此处的方法只走一次
+            
+            // block回调
+            if (self.bridge.callback.blockOnDiscoverPeripheral) {
+                self.bridge.callback.blockOnDiscoverPeripheral(self.centralManager, peripheral, advertisementData, RSSI);
+            }
+            
+            // 是否自动连接外设
+            if (self.autoConnectPeripheral) {
+                [self connectToPeripheral:peripheral];
+            }
         }
     }
 }

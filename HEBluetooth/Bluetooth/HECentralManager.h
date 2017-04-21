@@ -66,4 +66,10 @@
  */
 - (void)cancelAllPeripheralsConnection;
 
+/*!
+ *   @brief 返回所有搜索到的、已连接的、需要自动连接的设备
+ */
+- (NSArray *)findAllDiscoverPeripherals;
+- (NSArray *)findAllConnectedPeripheral;
+- (NSArray *)findAutoConnectPeripheral;
 @end

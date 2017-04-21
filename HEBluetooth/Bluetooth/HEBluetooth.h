@@ -35,8 +35,6 @@
 
 
 #pragma mark - 属性
-@property (nonatomic, strong, readonly) HECentralManager *centralManager;
-
 
 #pragma mark - Block - CBCentralManagerDelegate
 
@@ -50,6 +48,11 @@
  *   @brief 开始扫描，包含了扫描时间和是否停止扫描
  */
 - (void)setBlockOnScanPeripherals:(HECentralManagerDidScanPeripherals)block;
+
+/*!
+ *   @brief 结束扫描搜索设备
+ */
+- (void)setBlockOnCancelScan:(HECentralCancelScanBlock)block;
 
 /*!
  *   @brief 扫描的结果, peripheral:扫描到的外设, advertisementData:外设发送的广播数据, RSSI:信号强度
@@ -139,6 +142,11 @@
  *   @brief 开始扫描周围外设, 每5s尝试扫描一次，默认有5次机会 @see keyForCentalManagerWaitForOpenBluetooth
  */
 - (void)scanPeripherals;
+
+/*!
+ *   @brief 结束扫描
+ */
+- (void)cancelScan;
 
 /*!
  *   @brief 从外设的某个特征中读取详细内容

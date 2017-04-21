@@ -9,6 +9,9 @@
 #import "HEBluetooth.h"
 
 @interface HEBluetooth ()
+{
+    int waitForOpenBluetooth;
+}
 
 @property (nonatomic, strong) HECentralManager *centralManager;
 
@@ -68,6 +71,13 @@ static HEBluetooth *instance = nil;
  */
 - (void)setBlockOnCentralManagerDidUpdateState:(HECentralManagerDidUpdateStateBlock)block {
     self.centralManager.bridge.callback.blockOnUpdateCentralState = block;
+}
+
+/*!
+ *   @brief 结束扫描搜索设备
+ */
+- (void)setBlockOnCancelScan:(HECentralCancelScanBlock)block {
+    self.centralManager.bridge.callback.blockOnCancelScan = block;
 }
 
 /*!
@@ -197,17 +207,16 @@ static HEBluetooth *instance = nil;
 - (void)scanPeripherals {
     // 需要判断蓝牙是否已经打开
     if (self.centralManager.bluetoothState == HEBluetoothStatePoweredOn) {
+        waitForOpenBluetooth = 0;
         [self.centralManager scanPeripherals];
         
     } else {
         
         // 蓝牙暂时没有打开，等待中......
-        
-        int waitForOpenBluetooth = 0;
-        
         waitForOpenBluetooth++;
         if (waitForOpenBluetooth >= keyForCentalManagerWaitForOpenBluetooth) {
             DLog(@">>> 第 %d 次等待打开蓝牙任然失败，请检查你蓝牙使用权限或检查设备问题。", waitForOpenBluetooth);
+            waitForOpenBluetooth = 0;
             return;
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
@@ -218,13 +227,20 @@ static HEBluetooth *instance = nil;
     }
 }
 
-//- (void)connectPeripheral:(CBPeripheral *)peripheral autoReadCharacteristic:(BOOL)autoReadCharacteristic {
-//    if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
-//        self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
-//        self.centralManager.autoReadValueForCharacteristic = YES;       // 连接成功有直接读取特征值
-//        [self.centralManager connectToPeripheral:peripheral];
-//    }
-//}
+/*!
+ *   @brief 结束扫描
+ */
+- (void)cancelScan {
+    [self.centralManager cancelScan];
+}
+
+- (void)connectPeripheral:(CBPeripheral *)peripheral autoReadCharacteristic:(BOOL)autoReadCharacteristic {
+    if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
+        self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
+        self.centralManager.autoReadValueForCharacteristic = YES;       // 连接成功有直接读取特征值
+        [self.centralManager connectToPeripheral:peripheral];
+    }
+}
 
 /*!
  *   @brief 从外设的某个特征中读取详细内容
