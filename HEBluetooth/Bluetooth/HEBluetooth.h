@@ -173,6 +173,16 @@
  */
 - (void)ignorePeripheralFromHistory:(CBPeripheral *)peripheral;
 
+
+
+
+
+
+
+
+
+#pragma mark - 以下是手机作为外设的功能， 暂时不错测试
+
 #pragma mark - PeripheralManager
 
 /*!

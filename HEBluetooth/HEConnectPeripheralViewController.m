@@ -26,6 +26,9 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     [self setDelegate];
+    
+    // 检测、发现服务
+    [self.peripheral discoverServices:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,6 +44,7 @@
         currentPeripheral = peripheral;
         for (CBService *s in peripheral.services) {
             [self testServices:s];
+            [peripheral discoverCharacteristics:nil forService:s];
         }
     }];
     
@@ -54,16 +58,8 @@
         [weakSelf testCharacteristicForService:service];
     }];
     
-    [[HEBluetooth shareBluetooth] setBlockOnReadValueForDescriptors:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
-        NSLog(@"9999-阅读特征的描述");
-    }];
-    
-    [[HEBluetooth shareBluetooth] setBlockOnReadValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"6666-阅读特征");
-    }];
 
     
-       
     
     
         

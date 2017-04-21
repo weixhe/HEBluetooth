@@ -262,6 +262,10 @@ static HEBluetooth *instance = nil;
     [self.centralManager cancelAllPeripheralsConnection];
 }
 
+- (void)discoverServiceForPeripheral:(CBPeripheral *)peripheral serviceUUID:(CBUUID *)uuid {
+    [peripheral discoverServices:@[uuid]];
+}
+
 /*!
  *   @brief 从外设的某个特征中读取详细内容
  */
@@ -286,6 +290,22 @@ static HEBluetooth *instance = nil;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma mark - 以下是手机作为外设的功能， 暂时不错测试
 
 #pragma mark - PeripheralManager
 

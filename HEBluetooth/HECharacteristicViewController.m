@@ -13,12 +13,16 @@
 
 @property (nonatomic, strong) UILabel *titleLabel;
 
+
 @end
 
 @implementation HECharacteristicViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    self.dataSource = [NSMutableArray array];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 100)];
     [self.view addSubview:self.tableView];
@@ -31,7 +35,7 @@
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 0)];
     self.titleLabel.numberOfLines = 0;
-    self.titleLabel.text = [NSString stringWithFormat:@"蓝牙名称:%@ \n 服务UUID:%@, \n%@", self.currPeripheral.name, self.characteristic.UUID, self.characteristic.UUID.UUIDString];
+    self.titleLabel.text = [NSString stringWithFormat:@"蓝牙名称: %@ \n 服务UUID: %@, \nUUIDString: %@", self.currPeripheral.name, self.characteristic.UUID, self.characteristic.UUID.UUIDString];
     
     CGRect frame = self.titleLabel.frame;
     frame.size.height = [self labelHight];
@@ -39,7 +43,7 @@
     
     self.tableView.tableHeaderView = self.titleLabel;
     
-    
+    [self setDelegate];
 }
 
 - (CGFloat)labelHight {
@@ -52,8 +56,12 @@
 
 - (void)setDelegate {
     
+    
     [[HEBluetooth shareBluetooth] setBlockOnReadValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"%@", characteristic);
+        NSLog(@"特征：%@", characteristic);
+        
+        [peripheral discoverDescriptorsForCharacteristic:characteristic];
+        
     }];
     
     [[HEBluetooth shareBluetooth] setBlockOnDidWriteValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
@@ -62,10 +70,14 @@
     
     [[HEBluetooth shareBluetooth] setBlockOnDiscoverDescriptorsForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
         NSLog(@"8888-发现设备特征的描述");
+        for (CBDescriptor *d in characteristic.descriptors) {
+            NSLog(@"描述：%@", d);
+            [peripheral readValueForDescriptor:d];
+        }
     }];
     
     [[HEBluetooth shareBluetooth] setBlockOnReadValueForDescriptors:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
-        NSLog(@"9999-阅读特征的描述");
+        NSLog(@"%@", descriptor.value);
     }];
     
     [[HEBluetooth shareBluetooth] setBlockOnDidWriteValueForDescriptor:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
@@ -80,6 +92,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - 处理数据
+- (void)handleCharacteristic:(CBCharacteristic *)characteristic {
+    [self.dataSource addObject:characteristic.value];
+}
 
 #pragma mark - <UITableViewDelegate, UITableViewDataSource>
 

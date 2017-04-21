@@ -12,7 +12,7 @@
 #import "HEBluetoothBridge.h"
 
 /*!
- *   @brief 外设管理中心，即将手机当做一个外设
+ *   @brief 外设管理中心，即将手机当做一个外设, 暂时不错测试
  */
 @class HEBluetoothBridge;
 @interface HEPeripheralManager : NSObject <CBPeripheralManagerDelegate>
