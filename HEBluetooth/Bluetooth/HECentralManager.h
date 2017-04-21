@@ -71,4 +71,9 @@
 - (NSArray *)findAllDiscoverPeripherals;
 - (NSArray *)findAllConnectedPeripheral;
 - (NSArray *)findAutoConnectPeripheral;
+
+/*!
+ *   @brief 忽略历史连接设备中的某个设备，不自动连接
+ */
+- (void)ignorePeripheralFromHistory:(CBPeripheral *)peripheral;
 @end

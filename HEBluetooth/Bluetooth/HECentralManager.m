@@ -168,7 +168,9 @@
  */
 - (void)cancelPeripheralConnection:(CBPeripheral *)peripheral {
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
-        [self.centralManager cancelPeripheralConnection:peripheral];
+        if (peripheral.state == CBPeripheralStateConnected || peripheral.state == CBPeripheralStateConnecting) {
+            [self.centralManager cancelPeripheralConnection:peripheral];
+        }
     }
 }
 

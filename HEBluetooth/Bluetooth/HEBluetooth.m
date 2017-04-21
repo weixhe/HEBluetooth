@@ -239,13 +239,27 @@ static HEBluetooth *instance = nil;
  */
 - (void)connectPeripheral:(CBPeripheral *)peripheral {
     if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
-        self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
-        self.centralManager.autoDiscoverCharacteristics = YES;          // 连接成功有直接发现特征值
+//        self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
+//        self.centralManager.autoDiscoverCharacteristics = YES;          // 连接成功有直接发现特征值
 //        self.centralManager.autoReadValueForCharacteristic = YES;       // 读取特征值
 //        self.centralManager.autoDiscoverDescriptors = YES;              // 连接成功后自动发现描述值
 //        self.centralManager.autoReadValueForDescriptors = YES;          // 读取描述值
         [self.centralManager connectToPeripheral:peripheral];
     }
+}
+
+/*!
+ *   @brief  断开设备连接
+ */
+- (void)cancelPeripheralConnection:(CBPeripheral *)peripheral {
+    [self.centralManager cancelPeripheralConnection:peripheral];
+}
+
+/*!
+ *   @brief 断开所有已连接的设备
+ */
+- (void)cancelAllPeripheralsConnection {
+    [self.centralManager cancelAllPeripheralsConnection];
 }
 
 /*!
@@ -263,18 +277,15 @@ static HEBluetooth *instance = nil;
     }
 }
 
-////断开连接
-//- (void)cancelPeripheralConnection:(CBPeripheral *)peripheral {
-//    [babyCentralManager cancelPeripheralConnection:peripheral];
-//}
-////断开所有连接
-//- (void)cancelAllPeripheralsConnection {
-//    [babyCentralManager cancelAllPeripheralsConnection];
-//}
-////停止扫描
-//- (void)cancelScan{
-//    [babyCentralManager cancelScan];
-//}
+/*!
+ *   @brief 忽略历史连接设备中的某个设备，不自动连接
+ */
+- (void)ignorePeripheralFromHistory:(CBPeripheral *)peripheral {
+    [self.centralManager ignorePeripheralFromHistory:peripheral];
+}
+
+
+
 
 #pragma mark - PeripheralManager
 

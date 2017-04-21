@@ -154,9 +154,24 @@
 - (void)connectPeripheral:(CBPeripheral *)peripheral;
 
 /*!
+ *   @brief  断开设备连接
+ */
+- (void)cancelPeripheralConnection:(CBPeripheral *)peripheral;
+
+/*!
+ *   @brief 断开所有已连接的设备
+ */
+- (void)cancelAllPeripheralsConnection;
+
+/*!
  *   @brief 从外设的某个特征中读取详细内容
  */
 - (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist;
+
+/*!
+ *   @brief 忽略历史连接设备中的某个设备，不自动连接
+ */
+- (void)ignorePeripheralFromHistory:(CBPeripheral *)peripheral;
 
 #pragma mark - PeripheralManager
 
