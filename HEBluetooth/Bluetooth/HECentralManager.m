@@ -16,7 +16,6 @@
     // 存储相关的外设
     NSMutableArray *connectedPeripherals;       // 已经连接的设备、外设
     NSMutableArray *discoverPeripherals;        // 已经连接的设备、外设
-    NSMutableArray *autoReconnectPeripherals;   // 需要自动重连的设备、外设
     
     NSInteger scanTimeLength;       // 记录扫描时间
     NSInteger tryToScanTimes;       // 尝试连接的次数
@@ -43,7 +42,7 @@
         _bridge = [[HEBluetoothBridge alloc] init];
         connectedPeripherals = [NSMutableArray array];
         discoverPeripherals = [NSMutableArray array];
-        autoReconnectPeripherals = [NSMutableArray array];
+        self.autoReconnectPeripheral = YES;         // 默认会自动连接设备，已断开的或存在历史连接的
     }
     return self;
 }
@@ -114,14 +113,13 @@
     } else {
         tryToScanTimes++;
         if (tryToScanTimes > keyForCentalManagerWaitForOpenBluetooth) {
-            DLog(@">>>第 %ld 次等待打开蓝牙任然失败，请检查你蓝牙使用权限或检查设备问题。", tryToScanTimes);
+
             tryToScanTimes = 0;
             return;
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self scanPeripherals];
         });
-        DLog(@">>>蓝牙状态未开启(%ld)", tryToScanTimes);
     }
 }
 
@@ -130,7 +128,7 @@
  */
 - (void)scanTimerRunning {
     if (self.bridge.callback.blockOnDidScanPerippherals) {
-        BOOL stop = NULL;
+        BOOL stop = NO;
         self.bridge.callback.blockOnDidScanPerippherals(self.centralManager, ++scanTimeLength, &stop);
         if (stop) {
             [self cancelScan];
@@ -214,9 +212,7 @@
 - (NSArray *)findAllConnectedPeripheral {
     return connectedPeripherals;
 }
-- (NSArray *)findAutoConnectPeripheral {
-    return autoReconnectPeripherals;
-}
+
 #pragma mark - Privite Method
 
 /*!
@@ -253,25 +249,6 @@
 - (void)removeConnectPeripheral:(CBPeripheral *)peripheral {
     if ([connectedPeripherals containsObject:peripheral]) {
         [connectedPeripherals removeObject:peripheral];
-    }
-}
-
-
-/*!
- *   @brief 添加需要自动连接的设备
- */
-- (void)addAutoConnectPeripheral:(CBPeripheral *)peripheral {
-    if (![autoReconnectPeripherals containsObject:peripheral]) {
-        [autoReconnectPeripherals addObject:peripheral];
-    }
-}
-
-/*!
- *   @brief 删除需要自动连接的设备
- */
-- (void)removeAutoConnectPeripheral:(CBPeripheral *)peripheral {
-    if ([autoReconnectPeripherals containsObject:peripheral]) {
-        [autoReconnectPeripherals removeObject:peripheral];
     }
 }
 
@@ -418,9 +395,6 @@
             // 是否自动连接外设
             if ([self isContainedInHistory:peripheral]) {
                 [self connectToPeripheral:peripheral];
-                
-            } else if (self.autoConnectPeripheral) {
-                [self connectToPeripheral:peripheral];
             }
         }
     }
@@ -442,7 +416,9 @@
         [self addConnectPeripheral:peripheral];
         
         // 保存历史记录
-        [self saveToHistoryConnectioned:peripheral];
+        if (self.autoReconnectPeripheral) {
+            [self saveToHistoryConnectioned:peripheral];
+        }
         
         peripheral.delegate = self;
         
@@ -491,10 +467,9 @@
         }
         
         // 是否自动连接已断开的外设
-        if ([[self findAutoConnectPeripheral] containsObject:peripheral]) {
+        if ([self isContainedInHistory:peripheral]) {
             [self connectToPeripheral:peripheral];
         }
-        
     }
 }
 

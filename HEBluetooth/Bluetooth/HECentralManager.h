@@ -26,7 +26,7 @@
 
 @property (nonatomic, assign) BOOL autoDiscoverIncludedServices;        // 是否自动查找服务中的子服务
 
-//@property (nonatomic, assign) BOOL autoReconnectPeripheral;           // 是否自动重新连接已断开的外设
+@property (nonatomic, assign) BOOL autoReconnectPeripheral;             // 是否自动重新连接外设（已断开的或存在历史连接的）, 默认: YES
 
 @property (nonatomic, assign) BOOL autoDiscoverCharacteristics;         // 是否自动查找服务中的特征、特性
 @property (nonatomic, assign) BOOL autoReadValueForCharacteristic;      // 是否获取（更新）Characteristics的值
@@ -70,7 +70,6 @@
  */
 - (NSArray *)findAllDiscoverPeripherals;
 - (NSArray *)findAllConnectedPeripheral;
-- (NSArray *)findAutoConnectPeripheral;
 
 /*!
  *   @brief 忽略历史连接设备中的某个设备，不自动连接

@@ -154,6 +154,11 @@
 - (void)connectPeripheral:(CBPeripheral *)peripheral;
 
 /*!
+ *   @brief 连接设备仅一次，下次扫描不会自动连接，需要手动连接
+ */
+- (void)connectPeripheralOnceOnly:(CBPeripheral *)peripheral;
+
+/*!
  *   @brief  断开设备连接
  */
 - (void)cancelPeripheralConnection:(CBPeripheral *)peripheral;
@@ -181,7 +186,7 @@
 
 
 
-#pragma mark - 以下是手机作为外设的功能， 暂时不错测试
+#pragma mark - 以下是手机作为外设的功能， 暂时不做测试
 
 #pragma mark - PeripheralManager
 

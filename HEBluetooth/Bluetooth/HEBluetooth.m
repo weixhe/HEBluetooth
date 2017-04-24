@@ -238,14 +238,17 @@ static HEBluetooth *instance = nil;
  *   @brief 连接扫描的某一个设备
  */
 - (void)connectPeripheral:(CBPeripheral *)peripheral {
-    if ([HEBluetoothUtility filterOnDiscoverPeripheral:peripheral]) {
-//        self.centralManager.autoDiscoverServices = YES;                 // 连接成功后自动发现服务
-//        self.centralManager.autoDiscoverCharacteristics = YES;          // 连接成功有直接发现特征值
-//        self.centralManager.autoReadValueForCharacteristic = YES;       // 读取特征值
-//        self.centralManager.autoDiscoverDescriptors = YES;              // 连接成功后自动发现描述值
-//        self.centralManager.autoReadValueForDescriptors = YES;          // 读取描述值
-        [self.centralManager connectToPeripheral:peripheral];
-    }
+
+    self.centralManager.autoDiscoverServices = YES;
+    [self.centralManager connectToPeripheral:peripheral];
+}
+
+/*!
+ *   @brief 连接设备仅一次，下次扫描不会自动连接，需要手动连接
+ */
+- (void)connectPeripheralOnceOnly:(CBPeripheral *)peripheral {
+    self.centralManager.autoDiscoverServices = NO;
+    [self.centralManager connectToPeripheral:peripheral];
 }
 
 /*!
@@ -305,7 +308,7 @@ static HEBluetooth *instance = nil;
 
 
 
-#pragma mark - 以下是手机作为外设的功能， 暂时不错测试
+#pragma mark - 以下是手机作为外设的功能， 暂时不做测试
 
 #pragma mark - PeripheralManager
 
