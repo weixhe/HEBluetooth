@@ -270,14 +270,14 @@ static HEBluetooth *instance = nil;
 }
 
 /*!
- *   @brief 从外设的某个特征中读取详细内容
+ *   @brief 从外设的某个特征中读取详细内容(包括特征value和特征描述value)
  */
 - (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist {
     
     if (peripheral.state == CBPeripheralStateConnected) {
         
-        self.centralManager.onlyReadOnceValueForDescriptors = YES;      // 仅获取一次特征描述值
         [peripheral readValueForCharacteristic:charaterist];
+        self.centralManager.onlyReadOnceValueForDescriptors = YES;      // 仅获取一次特征描述值
         [peripheral discoverDescriptorsForCharacteristic:charaterist];
     } else {
         DLog(@"外设 %@ 非连接状态", peripheral.name);

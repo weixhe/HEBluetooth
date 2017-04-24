@@ -75,26 +75,6 @@
     return _bridge;
 }
 
-/*!
- *   @brief 是否需要获取（更新）特征值的描述值
- */
-- (void)setAutoReadValueForDescriptors:(BOOL)autoReadValueForDescriptors {
-    _autoReadValueForDescriptors = autoReadValueForDescriptors;
-    if (_autoReadValueForDescriptors) {
-        _onlyReadOnceValueForDescriptors = NO;
-    }
-}
-
-/*!
- *   @brief 只读取一次特征的描述值，与 autoReadValueForDescriptors 其一
- */
-- (void)setOnlyReadOnceValueForDescriptors:(BOOL)onlyReadOnceValueForDescriptors {
-    _onlyReadOnceValueForDescriptors = onlyReadOnceValueForDescriptors;
-    if (_onlyReadOnceValueForDescriptors) {
-        _autoReadValueForDescriptors = NO;
-    }
-}
-
 #pragma mark - Method
 /*!
  *   @brief 扫描Peripherals
@@ -131,10 +111,6 @@
         BOOL stop = NO;
         self.bridge.callback.blockOnDidScanPerippherals(self.centralManager, ++scanTimeLength, &stop);
         if (stop) {
-            [self cancelScan];
-        }
-    } else {
-        if (scanTimeLength >= 60) {
             [self cancelScan];
         }
     }
@@ -683,20 +659,19 @@
         if (self.bridge.callback.blockOnDiscoverDescriptorsForCharacteristic) {
             self.bridge.callback.blockOnDiscoverDescriptorsForCharacteristic(peripheral, characteristic, error);
         }
-        
-        // 如果需要获取(更新)特征值的描述值
-        if (self.autoReadValueForDescriptors) {
-            for (CBDescriptor *d in characteristic.descriptors) {
-                [peripheral readValueForDescriptor:d];      // 读取特征的描述值
-            }
-        }
-        
+
         // 仅读取一次描述值
         if (self.onlyReadOnceValueForDescriptors) {
             for (CBDescriptor *d in characteristic.descriptors) {
                 [peripheral readValueForDescriptor:d];
             }
             self.onlyReadOnceValueForDescriptors = NO;
+            
+        } else if (self.autoReadValueForDescriptors) {
+             // 如果需要获取(更新)特征值的描述值
+            for (CBDescriptor *d in characteristic.descriptors) {
+                [peripheral readValueForDescriptor:d];      // 读取特征的描述值
+            }
         }
     }
 }

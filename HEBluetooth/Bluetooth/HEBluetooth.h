@@ -169,7 +169,7 @@
 - (void)cancelAllPeripheralsConnection;
 
 /*!
- *   @brief 从外设的某个特征中读取详细内容
+ *   @brief 从外设的某个特征中读取详细内容(包括特征value和特征描述value)
  */
 - (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist;
 
