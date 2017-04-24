@@ -265,7 +265,12 @@ static HEBluetooth *instance = nil;
     [self.centralManager cancelAllPeripheralsConnection];
 }
 
+/*!
+ *   @brief 发现特殊的服务，根据UUID, 同时会自动发现该服务下的特征
+ */
 - (void)discoverServiceForPeripheral:(CBPeripheral *)peripheral serviceUUID:(CBUUID *)uuid {
+    
+    self.centralManager.autoDiscoverCharacteristics = YES;      // 自动发现特征
     [peripheral discoverServices:@[uuid]];
 }
 
@@ -293,7 +298,15 @@ static HEBluetooth *instance = nil;
 
 
 
+- (void)notify:(CBPeripheral *)peripheral characteristic:(CBCharacteristic *)characteristic
+         block:(void(^)(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error))block {
+    // 设置通知
+    [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+}
 
+- (void)cancelNotify:(CBPeripheral *)peripheral characteristic:(CBCharacteristic *)characteristic {
+    [peripheral setNotifyValue:NO forCharacteristic:characteristic];
+}
 
 
 

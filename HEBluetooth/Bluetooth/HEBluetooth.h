@@ -169,6 +169,11 @@
 - (void)cancelAllPeripheralsConnection;
 
 /*!
+ *   @brief 发现特殊的服务，根据UUID, 同时会自动发现该服务下的特征
+ */
+- (void)discoverServiceForPeripheral:(CBPeripheral *)peripheral serviceUUID:(CBUUID *)uuid;
+
+/*!
  *   @brief 从外设的某个特征中读取详细内容(包括特征value和特征描述value)
  */
 - (void)readCharacteristicForPeripheral:(CBPeripheral *)peripheral charaterist:(CBCharacteristic *)charaterist;
